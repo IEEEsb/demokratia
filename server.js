@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const { ValidationError } = require('express-validation');
 
 const app = express();
 
@@ -22,6 +23,20 @@ app.use(session({
 }));
 // Routing middleware
 app.use(routes);
+// Global error handling for custom responses on validation errors
+app.use((err, req, res, next) => {
+    // Inject the custom response if the error was caused by a validation
+    if (err instanceof ValidationError) {
+        const violations = err.errors;
+        res.status(400).json({
+            error: 'Invalid parameters.',
+            code: 'bad_request_parameters',
+            violations,
+        });
+    // Let express handle the error otherwise
+    } else if (err) throw err;
+    next();
+});
 
 /* eslint-disable no-console */
 console.log('===================================');
