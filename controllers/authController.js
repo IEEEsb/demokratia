@@ -1,8 +1,10 @@
 const crypto = require('crypto');
 
 const User = require('../models/UserModel');
+const { votingRole } = require('../config.json');
 
 function CredentialsError() {}
+function MissingRolesError() {}
 
 function authenticationRequiredResponse(res) {
     return res.status(401).json({
@@ -39,6 +41,7 @@ module.exports.login = (req, res, next) => {
         .then((isValid) => {
             // Check that the password is correct
             if (!isValid) throw new CredentialsError();
+            if (!user.roles.includes(votingRole)) throw new MissingRolesError();
 
             // Successful login. Set the session up and send the minimal set of
             // user information required by the application
@@ -54,6 +57,12 @@ module.exports.login = (req, res, next) => {
                 return res.status(400).json({
                     error: 'Invalid user/password combination.',
                     code: 'wrong_user_pass',
+                });
+            }
+            if (e instanceof MissingRolesError) {
+                return res.status(403).json({
+                    error: 'You don\'t have the required user roles.',
+                    code: 'missing_roles',
                 });
             }
 
