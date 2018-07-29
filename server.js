@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -33,12 +34,17 @@ app.use((err, req, res, next) => {
             code: 'bad_request_parameters',
             violations,
         });
-    // Let express handle the error otherwise
-    } else if (err) throw err;
+    // Respond with an internal server error
+    } else if (err) {
+        res.status(500).json({
+            error: 'Internal server error',
+            code: 'server_error',
+        });
+        console.error(err);
+    }
     next();
 });
 
-/* eslint-disable no-console */
 console.log('===================================');
 console.log('        >>> DEMOKRATIA <<<');
 console.log(' IEEE Student Branch voting system');
