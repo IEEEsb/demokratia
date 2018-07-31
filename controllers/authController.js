@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
 const User = require('../models/UserModel');
-const { votingRole } = require('../config.json');
+const { adminRole, votingRole } = require('../config.json');
 
 function CredentialsError() {}
 function MissingRolesError() {}
@@ -75,3 +75,24 @@ module.exports.authRequired = (req, res, next) => {
 
     return next();
 };
+
+module.exports.adminRequired = (req, res, next) => (
+    User.findById(req.session.userId)
+        .then((user) => {
+            if (user === null) {
+                return res.status(401).json({
+                    error: 'Invalid session. Please log in again.',
+                    code: 'invalid_session',
+                });
+            }
+            if (!user.roles.includes(adminRole)) {
+                return res.status(403).json({
+                    error: 'You must be an admin to do that.',
+                    code: 'admin_required',
+                });
+            }
+
+            return next();
+        })
+        .catch(e => next(e))
+);
