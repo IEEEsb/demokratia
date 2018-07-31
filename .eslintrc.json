@@ -1,11 +1,12 @@
 {
-    "extends": "airbnb-base",
-    "rules": {
-        "indent": ["error", 4],
-        "comma-dangle": ["error", "always-multiline",
-            {
-                "functions": "never"
-            }
-        ]
-    }
+	"extends": "airbnb-base",
+	"rules": {
+		"indent": ["error", "tab"],
+		"no-tabs": "off",
+		"comma-dangle": ["error", "always-multiline",
+			{
+				"functions": "never"
+			}
+		]
+	}
 }

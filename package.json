@@ -1,32 +1,32 @@
 {
-  "name": "demokratia",
-  "version": "0.2.0",
-  "description": "Voting system for IEEEsb elections.",
-  "main": "server.js",
-  "scripts": {
-    "lint": "eslint ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Repo-IEEEsb/voting.git"
-  },
-  "author": "Rama Universitaria de Estudiantes del IEEE de Madrid",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Repo-IEEEsb/voting/issues"
-  },
-  "homepage": "https://github.com/Repo-IEEEsb/voting#readme",
-  "dependencies": {
-    "express": "^4.16.3",
-    "express-session": "^1.15.6",
-    "express-validation": "^1.0.2",
-    "joi": "^13.4.0",
-    "mongoose": "^5.2.5",
-    "mongoose-float": "git@github.com:Repo-IEEEsb/mongoose-float.git"
-  },
-  "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.13.0"
-  }
+	"name": "demokratia",
+	"version": "0.2.0",
+	"description": "Voting system for IEEEsb elections.",
+	"main": "server.js",
+	"scripts": {
+		"lint": "eslint ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Repo-IEEEsb/voting.git"
+	},
+	"author": "Rama Universitaria de Estudiantes del IEEE de Madrid",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Repo-IEEEsb/voting/issues"
+	},
+	"homepage": "https://github.com/Repo-IEEEsb/voting#readme",
+	"dependencies": {
+		"express": "^4.16.3",
+		"express-session": "^1.15.6",
+		"express-validation": "^1.0.2",
+		"joi": "^13.4.0",
+		"mongoose": "^5.2.5",
+		"mongoose-float": "git@github.com:Repo-IEEEsb/mongoose-float.git"
+	},
+	"devDependencies": {
+		"eslint": "^4.19.1",
+		"eslint-config-airbnb-base": "^13.0.0",
+		"eslint-plugin-import": "^2.13.0"
+	}
 }
