@@ -1,0 +1,98 @@
+{
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"projects": {
+		"demokratia": {
+			"root": "",
+			"sourceRoot": "frontend",
+			"projectType": "application",
+			"prefix": "app",
+			"schematics": {
+				"@schematics/angular:component": {
+					"styleext": "less",
+					"spec": false
+				},
+				"@schematics/angular:class": {
+					"spec": false
+				},
+				"@schematics/angular:directive": {
+					"spec": false
+				},
+				"@schematics/angular:guard": {
+					"spec": false
+				},
+				"@schematics/angular:module": {
+					"spec": false
+				},
+				"@schematics/angular:pipe": {
+					"spec": false
+				},
+				"@schematics/angular:service": {
+					"spec": false
+				}
+			},
+			"architect": {
+				"build": {
+					"builder": "@angular-devkit/build-angular:browser",
+					"options": {
+						"outputPath": "dist",
+						"index": "frontend/index.html",
+						"main": "frontend/main.ts",
+						"polyfills": "frontend/polyfills.ts",
+						"tsConfig": "frontend/tsconfig.app.json",
+						"assets": [
+							"frontend/favicon.ico",
+							"frontend/assets"
+						],
+						"styles": [
+							"frontend/styles.less"
+						],
+						"scripts": []
+					},
+					"configurations": {
+						"production": {
+							"fileReplacements": [
+								{
+									"replace": "frontend/environments/environment.ts",
+									"with": "frontend/environments/environment.prod.ts"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"extractCss": true,
+							"namedChunks": false,
+							"aot": true,
+							"extractLicenses": true,
+							"vendorChunk": false,
+							"buildOptimizer": true
+						}
+					}
+				},
+				"serve": {
+					"builder": "@angular-devkit/build-angular:dev-server",
+					"options": {
+						"browserTarget": "demokratia:build"
+					},
+					"configurations": {
+						"production": {
+							"browserTarget": "demokratia:build:production"
+						}
+					}
+				},
+				"lint": {
+					"builder": "@angular-devkit/build-angular:tslint",
+					"options": {
+						"tsConfig": [
+							"frontend/tsconfig.app.json"
+						],
+						"exclude": [
+							"**/node_modules/**"
+						]
+					}
+				}
+			}
+		}
+	},
+	"defaultProject": "demokratia"
+}
