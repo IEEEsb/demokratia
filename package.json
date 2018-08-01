@@ -11,14 +11,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Repo-IEEEsb/voting.git"
+		"url": "git+https://github.com/Repo-IEEEsb/demokratia.git"
 	},
 	"author": "Rama Universitaria de Estudiantes del IEEE de Madrid",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/Repo-IEEEsb/voting/issues"
+		"url": "https://github.com/Repo-IEEEsb/demokratia/issues"
 	},
-	"homepage": "https://github.com/Repo-IEEEsb/voting#readme",
+	"homepage": "https://github.com/Repo-IEEEsb/demokratia#readme",
 	"dependencies": {
 		"@angular/animations": "^6.0.3",
 		"@angular/common": "^6.0.3",
