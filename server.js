@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 const session = require('express-session');
 
 const app = express();
@@ -22,6 +23,8 @@ app.use(session({
 	cookie: { secure: 'auto' },
 	saveUninitialized: false,
 }));
+// Static Angular distributables
+app.use(express.static(path.join(__dirname, 'dist')));
 // Routing middleware
 app.use(routes);
 // Global error handling for custom responses on validation errors
