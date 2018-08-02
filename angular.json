@@ -45,7 +45,8 @@
 							"frontend/assets"
 						],
 						"styles": [
-							"frontend/styles.less"
+							"frontend/styles.less",
+							"./node_modules/bootstrap/dist/css/bootstrap.min.css"
 						],
 						"scripts": []
 					},
