@@ -40,7 +40,7 @@ export class UserService {
 			// The response body may contain clues as to what went wrong,
 			console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
 
-			switch (error.error.error) {
+			switch (error.error.code) {
 				case 'wrong_user_pass':
 				errorText = 'Combinación Usuario/Contraseña incorrecta';
 				break;
