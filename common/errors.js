@@ -20,7 +20,7 @@ module.exports.globalErrorHandler = (err, req, res, next) => {
 	if (err instanceof ValidationError) {
 		return res.status(400).json({
 			message: 'Invalid parameters.',
-			error: 'invalid_parameters',
+			code: 'invalid_parameters',
 			violations: err.errors,
 		});
 	}
