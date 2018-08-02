@@ -8,6 +8,20 @@ class DemokratiaError extends Error {
 	}
 }
 
+class CredentialsError extends DemokratiaError {
+	constructor() {
+		super('Invalid user/password combination.', 'wrong_user_pass', 400);
+	}
+}
+module.exports.CredentialsError = CredentialsError;
+
+class MissingRolesError extends DemokratiaError {
+	constructor() {
+		super('You don\'t have the required roles', 'missing_roles', 403);
+	}
+}
+module.exports.MissingRolesError = MissingRolesError;
+
 module.exports.globalErrorHandler = (err, req, res, next) => {
 	// This is a controlled error, it has been thrown by demokratia's own
 	// code and we expected it might happen
