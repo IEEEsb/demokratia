@@ -6,6 +6,7 @@ const session = require('express-session');
 
 const app = express();
 
+// eslint-disable-next-line import/no-unresolved
 const config = require('./config.json');
 const routes = require('./routes');
 const { globalErrorHandler } = require('./common/errors');

@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 
 const User = require('../models/UserModel');
+// eslint-disable-next-line import/no-unresolved
 const { adminRole, votingRole } = require('../config.json');
 const { CredentialsError, MissingRolesError } = require('../common/errors');
 
