@@ -1,23 +1,39 @@
 @import '../../variables.less';
 
 .main {
-	background-color: @bg-color;
+	//background-color: @bg-color;
 }
 
 .form {
 	background-color: white;
+	border: #999 solid 1px;
+	padding: 3rem 2rem;
 }
 
 .submit {
+
 	font-size: 20px;
 	width: fit-content;
-	cursor: pointer;
-	user-select: none;
-	color: @bt-color;
-	&:hover {
-		color: @bt-hover-color;
+	border: none;
+	background: none;
+	&.enabled {
+		cursor: pointer;
+		user-select: none;
+		color: @bt-color;
+		&:hover {
+			color: @bt-hover-color;
+		}
+		&:focus {
+			outline: 0px;
+		}
+	}
+
+	&.disabled {
+		.dis-color(@bt-color);
 	}
 }
+
+
 
 .error {
 	color: @err-color;

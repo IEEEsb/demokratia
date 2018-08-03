@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 import { SHA256 } from 'crypto-js';
 
@@ -12,19 +12,28 @@ import { User } from '../../models/UserModel';
 })
 export class UserService {
 
+	private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+
 	constructor(private http: HttpClient) {
 
 	}
 
 	login(alias: string, password: string) {
-
+		console.log(`alias: ${alias}, password: ${password}`);
 		const body = {
 			alias: alias,
-			password: SHA256(password).toString()
+			password: password === '' ? '' : SHA256(password).toString()
 		};
 
 		return this.http.post<User>('api/login', body)
-		.pipe(catchError(this.handleError));
+		.pipe(
+			tap((user) => this.userSubject.next(user)),
+			catchError(this.handleError)
+		);
+	}
+
+	getUser() {
+		return this.userSubject.asObservable();
 	}
 
 	private handleError(error: HttpErrorResponse) {
@@ -36,18 +45,15 @@ export class UserService {
 			console.error('An error occurred:', error.message);
 			errorText = 'Error en la red';
 		} else {
-			// The backend returned an unsuccessful response code.
-			// The response body may contain clues as to what went wrong,
 			console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
 
 			switch (error.error.code) {
 				case 'wrong_user_pass':
-				errorText = 'Combinación Usuario/Contraseña incorrecta';
+				errorText = 'Usuario/Contraseña incorrectos';
 				break;
 
 				case 'invalid_parameters':
-				const parameters = error.error.violations.map((violation) => violation.field[0]);
-				errorText = `Parámetros inválidos: ${parameters.join(',')}`;
+				errorText = `Parámetros inválidos`;
 				break;
 
 				default:

@@ -10,7 +10,7 @@ import { UserService } from './user.service';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 
-import { AppRoutingModule } from './routing.module';
+import { AppRoutingModule } from './app.routing';
 
 @NgModule({
 	declarations: [

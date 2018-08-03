@@ -22,6 +22,10 @@ export class LoginComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.userService.getUser().subscribe(
+			(user) => {
+			}
+		);
 	}
 
 	login() {
