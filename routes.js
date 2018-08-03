@@ -7,6 +7,7 @@ const validators = require('./controllers/validators');
 const router = express.Router();
 
 router.post('/api/login', validate(validators.login), authController.login);
+router.post('/api/logout', authController.logout);
 
 // Endpoints that require authentication
 router.use(authController.authRequired);

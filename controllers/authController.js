@@ -50,6 +50,13 @@ module.exports.login = (req, res, next) => {
 		.catch(e => next(e));
 };
 
+module.exports.logout = (req, res) => (
+	req.session.destroy((e) => {
+		if (e) throw e;
+		return res.sendStatus(200);
+	})
+);
+
 module.exports.authRequired = (req, res, next) => {
 	if (!req.session.userId) return next(new AuthenticationRequiredError());
 
