@@ -12,22 +12,20 @@ module.exports.listElections = (req, res, next) => (
 		.catch(e => next(e))
 );
 
-module.exports.addElection = (req, res, next) => {
+module.exports.addElection = (req, res, next) => (
 	User.find({ roles: votingRole })
 		.distinct('_id') // Return an array of ids, rather than objects
 		.then(userIds => (
 			Election.create({ remainingVoters: userIds, ...req.body })
 		))
-		.then((election) => {
-			res.json(election);
-		})
+		.then(election => res.json(election))
 		.catch((e) => {
 			// E11000 is Mongo's error for duplicate key
 			if (e.code === 11000) return next(new DuplicateElectionError());
 
 			return next(e);
-		});
-};
+		})
+);
 
 module.exports.deleteElection = (req, res, next) => (
 	Election.deleteOne({ name: req.params.electionName })
@@ -35,7 +33,7 @@ module.exports.deleteElection = (req, res, next) => (
 			// Check if any Elections were deleted after the operation
 			if (result.n === 0) throw new UnknownElectionError();
 
-			res.sendStatus(200);
+			return res.sendStatus(200);
 		})
 		.catch(e => next(e))
 );
