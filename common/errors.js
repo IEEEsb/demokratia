@@ -15,12 +15,27 @@ class CredentialsError extends DemokratiaError {
 }
 module.exports.CredentialsError = CredentialsError;
 
+class DuplicateElectionError extends DemokratiaError {
+	constructor() {
+		super('An election with that name already exists',
+			'duplicate_election', 400);
+	}
+}
+module.exports.DuplicateElectionError = DuplicateElectionError;
+
 class MissingRolesError extends DemokratiaError {
 	constructor() {
 		super('You don\'t have the required roles', 'missing_roles', 403);
 	}
 }
 module.exports.MissingRolesError = MissingRolesError;
+
+class UnknownElectionError extends DemokratiaError {
+	constructor() {
+		super('There are no elections with such name.', 'unknown_poll', 404);
+	}
+}
+module.exports.UnknownElectionError = UnknownElectionError;
 
 module.exports.globalErrorHandler = (err, req, res, next) => {
 	// This is a controlled error, it has been thrown by demokratia's own

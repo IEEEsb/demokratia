@@ -13,4 +13,14 @@ module.exports = {
 			password: Joi.string().required(),
 		},
 	},
+	election: {
+		body: {
+			name: Joi.string().token().required(),
+			title: Joi.string().required(),
+			shortDescription: Joi.string().required(),
+			longDescription: Joi.string(),
+			startDate: Joi.string().isoDate().required(),
+			endDate: Joi.string().isoDate().required(),
+		},
+	},
 };
