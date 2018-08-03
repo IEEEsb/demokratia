@@ -8,6 +8,21 @@ class DemokratiaError extends Error {
 	}
 }
 
+class AdminRequiredError extends DemokratiaError {
+	constructor() {
+		super('You must be an admin to do that.', 'admin_required', 403);
+	}
+}
+module.exports.AdminRequiredError = AdminRequiredError;
+
+class AuthenticationRequiredError extends DemokratiaError {
+	constructor() {
+		super('You must be logged in to do that.',
+			'authentication_required', 401);
+	}
+}
+module.exports.AuthenticationRequiredError = AuthenticationRequiredError;
+
 class CredentialsError extends DemokratiaError {
 	constructor() {
 		super('Invalid user/password combination.', 'wrong_user_pass', 400);
@@ -22,6 +37,13 @@ class DuplicateElectionError extends DemokratiaError {
 	}
 }
 module.exports.DuplicateElectionError = DuplicateElectionError;
+
+class InvalidSessionError extends DemokratiaError {
+	constructor() {
+		super('Invalid session. Please log in again.', 'invalid_session', 401);
+	}
+}
+module.exports.InvalidSessionError = InvalidSessionError;
 
 class MissingRolesError extends DemokratiaError {
 	constructor() {

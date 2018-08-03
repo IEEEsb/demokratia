@@ -3,14 +3,10 @@ const crypto = require('crypto');
 const User = require('../models/UserModel');
 // eslint-disable-next-line import/no-unresolved
 const { adminRole, votingRole } = require('../config.json');
-const { CredentialsError, MissingRolesError } = require('../common/errors');
-
-function authenticationRequiredResponse(res) {
-	return res.status(401).json({
-		error: 'You must be logged in to do that.',
-		code: 'authentication_required',
-	});
-}
+const {
+	AdminRequiredError, AuthenticationRequiredError, CredentialsError,
+	InvalidSessionError, MissingRolesError,
+} = require('../common/errors');
 
 function validateSaltedPassword(password, salt, hash, iterations) {
 	return new Promise((resolve, reject) => {
@@ -55,7 +51,7 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.authRequired = (req, res, next) => {
-	if (!req.session.userId) return authenticationRequiredResponse(res);
+	if (!req.session.userId) return next(new AuthenticationRequiredError());
 
 	return next();
 };
@@ -63,18 +59,8 @@ module.exports.authRequired = (req, res, next) => {
 module.exports.adminRequired = (req, res, next) => (
 	User.findById(req.session.userId)
 		.then((user) => {
-			if (user === null) {
-				return res.status(401).json({
-					error: 'Invalid session. Please log in again.',
-					code: 'invalid_session',
-				});
-			}
-			if (!user.roles.includes(adminRole)) {
-				return res.status(403).json({
-					error: 'You must be an admin to do that.',
-					code: 'admin_required',
-				});
-			}
+			if (user === null) throw new InvalidSessionError();
+			if (!user.roles.includes(adminRole)) throw new AdminRequiredError();
 
 			return next();
 		})
