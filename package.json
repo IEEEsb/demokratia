@@ -38,7 +38,7 @@
 		"express-validation": "^1.0.2",
 		"joi": "^13.4.0",
 		"mongoose": "^5.2.5",
-		"mongoose-float": "git@github.com:Repo-IEEEsb/mongoose-float.git",
+		"mongoose-float": "https://github.com/Repo-IEEEsb/mongoose-float.git",
 		"rxjs": "^6.0.0",
 		"zone.js": "^0.8.26"
 	},
