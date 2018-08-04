@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 const app = express();
 
@@ -35,6 +36,7 @@ mongoose.connect(config.mongo.serverUrl, {
 	app.use(session({
 		name: 'auth',
 		secret: config.store.secret,
+		store: new MongoStore({ mongooseConnection: mongoose.connection }),
 		resave: false,
 		cookie: { secure: 'auto' },
 		saveUninitialized: false,
