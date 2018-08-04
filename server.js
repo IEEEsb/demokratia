@@ -14,23 +14,6 @@ const { globalErrorHandler } = require('./common/errors');
 // Load the Mongoose model for user profiles
 require('./models/UserModel');
 
-// Parser for the requests' body
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: false }));
-// Session storage
-app.use(session({
-	name: 'auth',
-	secret: config.store.secret,
-	resave: false,
-	cookie: { secure: 'auto' },
-	saveUninitialized: false,
-}));
-// Static Angular distributables
-app.use(express.static(path.join(__dirname, 'dist')));
-// Routing middleware
-app.use(routes);
-// Global error handling for custom responses on validation errors
-app.use(globalErrorHandler);
 
 console.log('===================================');
 console.log('        >>> DEMOKRATIA <<<');
@@ -44,6 +27,24 @@ mongoose.connect(config.mongo.serverUrl, {
 	useNewUrlParser: true,
 }).then(() => {
 	console.log(`Connected to MongoDB instance at ${config.mongo.serverUrl}`);
+
+	// Parser for the requests' body
+	app.use(express.json({ limit: '50mb' }));
+	app.use(express.urlencoded({ extended: false }));
+	// Session storage
+	app.use(session({
+		name: 'auth',
+		secret: config.store.secret,
+		resave: false,
+		cookie: { secure: 'auto' },
+		saveUninitialized: false,
+	}));
+	// Static Angular distributables
+	app.use(express.static(path.join(__dirname, 'dist')));
+	// Routing middleware
+	app.use(routes);
+	// Global error handling for custom responses on validation errors
+	app.use(globalErrorHandler);
 
 	// Start listening to requests
 	app.listen(config.serverPort,
