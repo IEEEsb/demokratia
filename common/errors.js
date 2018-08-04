@@ -59,6 +59,14 @@ class UnknownElectionError extends DemokratiaError {
 }
 module.exports.UnknownElectionError = UnknownElectionError;
 
+class WrongPropertiesError extends DemokratiaError {
+	constructor() {
+		super('None of the provided parameters are compatible with this model',
+			'no_valid_model_properties', 400);
+	}
+}
+module.exports.WrongPropertiesError = WrongPropertiesError;
+
 module.exports.globalErrorHandler = (err, req, res, next) => {
 	// This is a controlled error, it has been thrown by demokratia's own
 	// code and we expected it might happen

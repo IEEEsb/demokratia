@@ -23,4 +23,13 @@ module.exports = {
 			endDate: Joi.string().isoDate().required(),
 		},
 	},
+	updateElection: {
+		// Just ban the fields that shouldn't be directly modified by any user
+		// at all (not even admins)
+		body: {
+			remainingVoters: Joi.any().forbidden(),
+			createdDate: Joi.any().forbidden(),
+			polls: Joi.any().forbidden(),
+		},
+	},
 };

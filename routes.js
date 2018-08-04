@@ -19,6 +19,8 @@ router.use(authController.adminRequired);
 
 router.post('/api/elections', validate(validators.election),
 	electionController.addElection);
+router.patch('/api/elections/:electionName',
+	validate(validators.updateElection), electionController.updateElection);
 router.delete('/api/elections/:electionName',
 	electionController.deleteElection);
 
