@@ -10,14 +10,14 @@ class DemokratiaError extends Error {
 
 class AdminRequiredError extends DemokratiaError {
 	constructor() {
-		super('You must be an admin to do that.', 'admin_required', 403);
+		super('You must be an admin to do that', 'admin_required', 403);
 	}
 }
 module.exports.AdminRequiredError = AdminRequiredError;
 
 class AuthenticationRequiredError extends DemokratiaError {
 	constructor() {
-		super('You must be logged in to do that.',
+		super('You must be logged in to do that',
 			'authentication_required', 401);
 	}
 }
@@ -25,7 +25,7 @@ module.exports.AuthenticationRequiredError = AuthenticationRequiredError;
 
 class CredentialsError extends DemokratiaError {
 	constructor() {
-		super('Invalid user/password combination.', 'wrong_user_pass', 400);
+		super('Invalid user/password combination', 'wrong_user_pass', 400);
 	}
 }
 module.exports.CredentialsError = CredentialsError;
@@ -40,7 +40,7 @@ module.exports.DuplicateElectionError = DuplicateElectionError;
 
 class InvalidSessionError extends DemokratiaError {
 	constructor() {
-		super('Invalid session. Please log in again.', 'invalid_session', 401);
+		super('Invalid session. Please log in again', 'invalid_session', 401);
 	}
 }
 module.exports.InvalidSessionError = InvalidSessionError;
@@ -54,7 +54,7 @@ module.exports.MissingRolesError = MissingRolesError;
 
 class UnknownElectionError extends DemokratiaError {
 	constructor() {
-		super('There are no elections with such name.', 'unknown_poll', 404);
+		super('There are no elections with such name', 'unknown_poll', 404);
 	}
 }
 module.exports.UnknownElectionError = UnknownElectionError;
@@ -78,7 +78,7 @@ module.exports.globalErrorHandler = (err, req, res, next) => {
 	// error object as well
 	if (err instanceof ValidationError) {
 		return res.status(400).json({
-			message: 'Invalid parameters.',
+			message: 'Invalid parameters',
 			code: 'invalid_parameters',
 			violations: err.errors,
 		});
