@@ -54,3 +54,15 @@ module.exports.deleteElection = (req, res, next) => (
 		})
 		.catch(e => next(e))
 );
+
+module.exports.getElection = (req, res, next) => (
+	Election.findOne({ name: req.params.electionName },
+		'-_id -__v -remainingVoters')
+		.populate('poll')
+		.then((election) => {
+			if (election === null) throw new UnknownElectionError();
+
+			return res.json(election);
+		})
+		.catch(e => next(e))
+);

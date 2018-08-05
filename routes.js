@@ -13,6 +13,7 @@ router.post('/api/logout', authController.logout);
 router.use(authController.authRequired);
 
 router.get('/api/elections', electionController.listElections);
+router.get('/api/elections/:electionName', electionController.getElection);
 
 // Endpoints limited to administrators
 router.use(authController.adminRequired);
