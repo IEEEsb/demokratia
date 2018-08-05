@@ -1,7 +1,7 @@
 const Election = require('../models/Election');
 const User = require('../models/UserModel');
 const {
-	DuplicateElectionError, UnknownElectionError, WrongPropertiesError,
+	DuplicateObjectError, UnknownObjectError, WrongPropertiesError,
 } = require('../common/errors');
 
 const { votingRole } = require('../config.json');
@@ -21,7 +21,7 @@ module.exports.addElection = (req, res, next) => (
 		.then(election => res.json(election))
 		.catch((e) => {
 			// E11000 is Mongo's error for duplicate key
-			if (e.code === 11000) return next(new DuplicateElectionError());
+			if (e.code === 11000) return next(new DuplicateObjectError('Election'));
 
 			return next(e);
 		})
@@ -33,7 +33,7 @@ module.exports.updateElection = (req, res, next) => (
 			// Make sure that at least one of the provided fields was valid
 			if (result.ok === 0) throw new WrongPropertiesError();
 			// Check if any Elections were updated after the operation
-			if (result.n === 0) throw new UnknownElectionError();
+			if (result.n === 0) throw new UnknownObjectError('Election');
 
 			// The backend doesn't complain if the Election existed but it
 			// didn't suffer any modifications at all, it just accepts the
@@ -48,7 +48,7 @@ module.exports.deleteElection = (req, res, next) => (
 	Election.deleteOne({ name: req.params.electionName })
 		.then((result) => {
 			// Check if any Elections were deleted after the operation
-			if (result.n === 0) throw new UnknownElectionError();
+			if (result.n === 0) throw new UnknownObjectError('Election');
 
 			return res.sendStatus(200);
 		})
@@ -60,7 +60,7 @@ module.exports.getElection = (req, res, next) => (
 		'-_id -__v -remainingVoters')
 		.populate('poll')
 		.then((election) => {
-			if (election === null) throw new UnknownElectionError();
+			if (election === null) throw new UnknownObjectError('Election');
 
 			return res.json(election);
 		})
