@@ -24,5 +24,7 @@ router.patch('/api/elections/:electionName',
 	validate(validators.updateElection), electionController.updateElection);
 router.delete('/api/elections/:electionName',
 	electionController.deleteElection);
+router.post('/api/elections/:electionName/polls', validate(validators.poll),
+	electionController.addPoll);
 
 module.exports = router;

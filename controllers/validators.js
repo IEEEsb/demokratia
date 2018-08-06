@@ -32,4 +32,11 @@ module.exports = {
 			polls: Joi.any().forbidden(),
 		},
 	},
+	poll: {
+		body: {
+			name: Joi.string().required(),
+			question: Joi.string().required(),
+			description: Joi.string(),
+		},
+	},
 };

@@ -1,4 +1,5 @@
 const Election = require('../models/Election');
+const Poll = require('../models/Poll');
 const User = require('../models/UserModel');
 const {
 	DuplicateObjectError, UnknownObjectError, WrongPropertiesError,
@@ -63,6 +64,29 @@ module.exports.getElection = (req, res, next) => (
 			if (election === null) throw new UnknownObjectError('Election');
 
 			return res.json(election);
+		})
+		.catch(e => next(e))
+);
+
+module.exports.addPoll = (req, res, next) => (
+	Election.findOne({
+		name: req.params.electionName,
+	})
+		.then((election) => {
+			if (election === null) throw new UnknownObjectError('Election');
+
+			// We need to repeat the query for the election's name. Otherwise
+			// we won't be able to know if the update failed because the
+			// election doesn't exist or because the poll was duplicate.
+			return Election.update({
+				name: req.params.electionName,
+				'polls.name': { $ne: req.body.name },
+			}, { $addToSet: { polls: new Poll(req.body) } });
+		})
+		.then((result) => {
+			if (result.nModified === 0) throw new DuplicateObjectError('Poll');
+
+			return res.sendStatus(200);
 		})
 		.catch(e => next(e))
 );
