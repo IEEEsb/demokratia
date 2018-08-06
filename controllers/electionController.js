@@ -42,7 +42,12 @@ module.exports.updateElection = (req, res, next) => (
 
 			return res.sendStatus(200);
 		})
-		.catch(e => next(e))
+		.catch((e) => {
+			// E11000 is Mongo's error for duplicate key
+			if (e.code === 11000) return next(new DuplicateObjectError('Election'));
+
+			return next(e);
+		})
 );
 
 module.exports.deleteElection = (req, res, next) => (
