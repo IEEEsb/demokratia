@@ -4,7 +4,12 @@ const { Schema } = mongoose;
 
 const Poll = new Schema({
 	// An identifier for the poll, like the charge being chosen
-	name: { type: String, required: true, unique: true },
+	name: {
+		type: String,
+		required: true,
+		unique: true,
+		sparse: true,
+	},
 	// A human-readable question that makes clear what is being voted in the
 	// poll
 	question: { type: String, required: true },
@@ -12,7 +17,7 @@ const Poll = new Schema({
 	// charge should do
 	description: { type: String },
 	// The possible non-blank votes for this poll
-	candidates: [{ type: Schema.Types.ObjectId, unique: true }],
+	candidates: [{ type: Schema.Types.ObjectId, unique: true, sparse: true }],
 	// Don't create IDs for polls in order to keep them unique when adding them
 	// to an election
 }, { _id: false });
