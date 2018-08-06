@@ -68,6 +68,7 @@ class WrongPropertiesError extends DemokratiaError {
 }
 module.exports.WrongPropertiesError = WrongPropertiesError;
 
+// eslint-disable-next-line no-unused-vars
 module.exports.globalErrorHandler = (err, req, res, next) => {
 	// This is a controlled error, it has been thrown by demokratia's own
 	// code and we expected it might happen
@@ -87,9 +88,8 @@ module.exports.globalErrorHandler = (err, req, res, next) => {
 	// Unknown error, something we haven't handled (and a potential bug).
 	// Throw an internal server error and display it in the logs
 	console.error(err); // eslint-disable-line no-console
-	res.status(500).json({
+	return res.status(500).json({
 		message: 'Internal server error',
 		code: 'internal_server_error',
 	});
-	return next(err);
 };
