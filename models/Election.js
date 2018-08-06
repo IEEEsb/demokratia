@@ -14,7 +14,7 @@ const Election = new Schema({
 	longDescription: { type: String },
 	// Which users can vote during these elections. The items will be
 	// removed as users vote
-	remainingVoters: [{ type: Schema.Types.ObjectId, unique: true }],
+	remainingVoters: [{ type: Schema.Types.ObjectId }],
 	// When should the polls open and close, and creation metadata
 	startDate: { type: Date, required: true },
 	endDate: { type: Date, required: true },
