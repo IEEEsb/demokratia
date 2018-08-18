@@ -2,6 +2,7 @@ const express = require('express');
 const validate = require('express-validation');
 const authController = require('./controllers/authController');
 const electionController = require('./controllers/electionController');
+const pollController = require('./controllers/pollController');
 const validators = require('./controllers/validators');
 
 const router = express.Router();
@@ -25,8 +26,8 @@ router.patch('/api/elections/:electionName',
 router.delete('/api/elections/:electionName',
 	electionController.deleteElection);
 router.post('/api/elections/:electionName/polls', validate(validators.poll),
-	electionController.addPoll);
+	pollController.addPoll);
 router.patch('/api/elections/:electionName/polls/:pollName',
-	validate(validators.poll), electionController.updatePoll);
+	validate(validators.poll), pollController.updatePoll);
 
 module.exports = router;
