@@ -79,3 +79,18 @@ module.exports.updatePoll = (req, res, next) => (
 		})
 		.catch(e => next(e))
 );
+
+module.exports.deletePoll = (req, res, next) => (
+	Election.update({ name: req.params.electionName },
+		{ $pull: { polls: { name: req.params.pollName } } })
+		.then((result) => {
+			// Check if any Elections were updated after the operation
+			if (result.n === 0) throw new UnknownObjectError('Election');
+			// Make sure that a Poll object was modified (i.e. pollName was
+			// valid)
+			if (result.nModified === 0) throw new UnknownObjectError('Poll');
+
+			return res.sendStatus(200);
+		})
+		.catch(e => next(e))
+);
