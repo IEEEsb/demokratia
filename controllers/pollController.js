@@ -94,3 +94,38 @@ module.exports.deletePoll = (req, res, next) => (
 		})
 		.catch(e => next(e))
 );
+
+module.exports.addCandidate = (req, res, next) => {
+	// TODO: Make sure that the candidate isn't present in any other Poll of
+	// this Election
+	let user;
+
+	return User.findOne({ alias: req.body.alias, roles: votingRole })
+		.then((item) => {
+			user = item;
+			// We also consider that the user doesn't exist if they don't have the required
+			// roles, just to avoid leaking user role information
+			if (user === null) throw new UnknownObjectError('User');
+
+			return Election.findOne({ name: req.params.electionName });
+		})
+		.then((election) => {
+			if (election === null) throw new UnknownObjectError('Election');
+
+			return Election.update({
+				name: req.params.electionName,
+				'polls.name': req.params.pollName,
+			}, { $addToSet: { 'polls.$.candidates': user.id } });
+		})
+		.then((result) => {
+			// Check that the provided pollName was valid
+			if (result.n === 0) throw new UnknownObjectError('Poll');
+
+			// Make sure that a Poll object was modified (i.e. the candidate
+			// wasn't duplicate)
+			if (result.nModified === 0) throw new DuplicateObjectError('Candidate');
+
+			return res.sendStatus(200);
+		})
+		.catch(e => next(e));
+};
