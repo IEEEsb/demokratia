@@ -32,7 +32,7 @@ module.exports.CredentialsError = CredentialsError;
 
 class DuplicateObjectError extends DemokratiaError {
 	constructor(objectType) {
-		super(`An "${objectType}" object with that name already exists`,
+		super(`A(n) "${objectType}" object with that name already exists`,
 			'duplicate_object', 400);
 	}
 }
