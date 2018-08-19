@@ -33,5 +33,7 @@ router.delete('/api/elections/:electionName/polls/:pollName',
 	pollController.deletePoll);
 router.post('/api/elections/:electionName/polls/:pollName/candidates',
 	validate(validators.addCandidate), pollController.addCandidate);
+router.delete('/api/elections/:electionName/polls/:pollName/candidates/:alias',
+	pollController.deleteCandidate);
 
 module.exports = router;

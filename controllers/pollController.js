@@ -129,3 +129,34 @@ module.exports.addCandidate = (req, res, next) => {
 		})
 		.catch(e => next(e));
 };
+
+module.exports.deleteCandidate = (req, res, next) => (
+	Election.findOne({ name: req.params.electionName })
+		.then((election) => {
+			if (election === null) throw new UnknownObjectError('Election');
+
+			return User.findOne({ alias: req.params.alias });
+		})
+		.then((user) => {
+			// Just to have an undefined userId when the user doesn't exist, so
+			// the update operation will end up with an nModified === 0. We
+			// could check if user is null here, but this way we avoid having
+			// multiple sources of UnknownObjectErrors for candidates
+			const userId = (user || {}).id;
+
+			return Election.update({
+				name: req.params.electionName,
+				'polls.name': req.params.pollName,
+			}, { $pull: { 'polls.$.candidates': userId } });
+		})
+		.then((result) => {
+			// Check if any Elections were updated after the operation
+			if (result.n === 0) throw new UnknownObjectError('Poll');
+			// Make sure that a Poll object was modified (i.e. pollName was
+			// valid)
+			if (result.nModified === 0) throw new UnknownObjectError('Candidate');
+
+			return res.sendStatus(200);
+		})
+		.catch(e => next(e))
+);
