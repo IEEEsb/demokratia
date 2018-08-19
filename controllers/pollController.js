@@ -160,3 +160,17 @@ module.exports.deleteCandidate = (req, res, next) => (
 		})
 		.catch(e => next(e))
 );
+
+module.exports.listPotentialCandidates = (req, res, next) => (
+	// List all the users that can be candidates (i.e. they have the
+	// votingRole) but aren't candidates for any Poll in this Election yet
+	Election.findOne({ name: req.params.electionName })
+		.populate('usermodel')
+		.distinct('polls.candidates')
+		.then(candidates => User.find({
+			roles: votingRole,
+			_id: { $nin: candidates },
+		}, '-_id name alias'))
+		.then(users => res.json({ users }))
+		.catch(e => next(e))
+);
