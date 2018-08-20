@@ -7,6 +7,7 @@
 		"lint": "eslint . --ignore-path=.gitignore && ng lint",
 		"ng": "ng",
 		"watch-front": "ng build --watch --poll=1000",
+		"watch-back": "nodemon --ignore dist/ --ignore frontend/",
 		"build": "ng build --no-progress"
 	},
 	"repository": {
@@ -57,6 +58,7 @@
 		"eslint-plugin-import": "^2.13.0",
 		"jasmine-core": "~2.99.1",
 		"jasmine-spec-reporter": "~4.2.1",
+		"nodemon": "^1.18.3",
 		"ts-node": "~5.0.1",
 		"tslint": "~5.9.1",
 		"typescript": "~2.7.2"
