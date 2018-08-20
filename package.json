@@ -8,6 +8,7 @@
 		"ng": "ng",
 		"watch-front": "ng build --watch --poll=1000",
 		"watch-back": "nodemon --ignore dist/ --ignore frontend/",
+		"dev": "concurrently --kill-others --raw --default-input-target 1 \"npm run watch-front\" \"npm run watch-back\"",
 		"build": "ng build --no-progress"
 	},
 	"repository": {
@@ -53,6 +54,7 @@
 		"@types/jasminewd2": "~2.0.3",
 		"@types/node": "~8.9.4",
 		"codelyzer": "^4.4.2",
+		"concurrently": "^3.6.1",
 		"eslint": "^4.19.1",
 		"eslint-config-airbnb-base": "^13.0.0",
 		"eslint-plugin-import": "^2.13.0",
