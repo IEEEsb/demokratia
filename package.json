@@ -6,6 +6,7 @@
 	"scripts": {
 		"lint": "eslint . --ignore-path=.gitignore && ng lint",
 		"ng": "ng",
+		"watch-front": "ng build --watch --poll=1000",
 		"build": "ng build"
 	},
 	"repository": {
