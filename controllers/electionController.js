@@ -8,7 +8,7 @@ const { votingRole } = require('../config.json');
 
 module.exports.listElections = (req, res, next) => (
 	Election.find({}, '-_id -__v -longDescription -remainingVoters -polls')
-		.then(polls => res.json(polls))
+		.then(elections => res.json(elections))
 		.catch(e => next(e))
 );
 
