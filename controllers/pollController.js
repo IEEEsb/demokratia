@@ -120,6 +120,7 @@ module.exports.addCandidate = (req, res, next) => {
 				$addToSet: {
 					'polls.$.candidacies': {
 						user: user.id,
+						proposal: req.body.proposal,
 					},
 				},
 			});

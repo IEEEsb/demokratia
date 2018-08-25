@@ -21,6 +21,7 @@ const Poll = new Schema({
 		{
 			_id: false,
 			user: { type: Schema.Types.ObjectId, ref: 'UserModel', required: true },
+			proposal: { type: String, required: true },
 		},
 	],
 });

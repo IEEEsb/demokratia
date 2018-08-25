@@ -42,6 +42,7 @@ module.exports = {
 	addCandidate: {
 		body: {
 			alias: Joi.string().required(),
+			proposal: Joi.string().required(),
 		},
 	},
 };
