@@ -63,6 +63,7 @@ module.exports.deleteElection = (req, res, next) => (
 module.exports.getElection = (req, res, next) => (
 	Election.findOne({ name: req.params.electionName },
 		'-_id -__v -remainingVoters')
+		.populate('polls.candidacies.user', 'name alias')
 		.then((election) => {
 			if (election === null) throw new UnknownObjectError('Election');
 

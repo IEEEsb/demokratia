@@ -115,7 +115,14 @@ module.exports.addCandidate = (req, res, next) => {
 			return Election.update({
 				name: req.params.electionName,
 				'polls.name': req.params.pollName,
-			}, { $addToSet: { 'polls.$.candidates': user.id } });
+			},
+			{
+				$addToSet: {
+					'polls.$.candidacies': {
+						user: user.id,
+					},
+				},
+			});
 		})
 		.then((result) => {
 			// Check that the provided pollName was valid
@@ -147,7 +154,7 @@ module.exports.deleteCandidate = (req, res, next) => (
 			return Election.update({
 				name: req.params.electionName,
 				'polls.name': req.params.pollName,
-			}, { $pull: { 'polls.$.candidates': userId } });
+			}, { $pull: { 'polls.$.candidacies': { user: userId } } });
 		})
 		.then((result) => {
 			// Check if any Elections were updated after the operation
@@ -165,7 +172,7 @@ module.exports.listPotentialCandidates = (req, res, next) => (
 	// List all the users that can be candidates (i.e. they have the
 	// votingRole) but aren't candidates for any Poll in this Election yet
 	Election.findOne({ name: req.params.electionName })
-		.distinct('polls.candidates')
+		.distinct('polls.candidacies.user')
 		.then(candidates => User.find({
 			roles: votingRole,
 			_id: { $nin: candidates },

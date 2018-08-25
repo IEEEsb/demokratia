@@ -16,8 +16,13 @@ const Poll = new Schema({
 	// A longer description of the poll, like details on what the specific
 	// charge should do
 	description: { type: String },
-	// The possible non-blank votes for this poll
-	candidates: [{ type: Schema.Types.ObjectId, unique: true, sparse: true }],
+	// The users that want to participate as electable members in the poll
+	candidacies: [
+		{
+			_id: false,
+			user: { type: Schema.Types.ObjectId, ref: 'UserModel', required: true },
+		},
+	],
 });
 
 module.exports = mongoose.model('Poll', Poll);
