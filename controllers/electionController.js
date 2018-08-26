@@ -4,8 +4,8 @@ const Ballot = require('../models/Ballot');
 const { arraysEqual } = require('../common/util');
 const {
 	DuplicateObjectError, InvalidCandidateError, NotInCensusError,
-	PollsClosedError, UnknownObjectError, WrongBallotPollsError,
-	WrongPropertiesError,
+	PollsClosedError, PollsNotClosedError, UnknownObjectError,
+	WrongBallotPollsError, WrongPropertiesError,
 } = require('../common/errors');
 
 const { votingRole } = require('../config.json');
@@ -146,5 +146,87 @@ module.exports.vote = (req, res, next) => (
 				// Continue the promise chain here to have acess to the ballot
 				.then(res.json({ secret: ballot.id }));
 		})
+		.catch(e => next(e))
+);
+
+module.exports.results = (req, res, next) => (
+	Election.findOne({ name: req.params.electionName })
+		.then((election) => {
+			if (election === null) throw new UnknownObjectError('Election');
+			// The results can only be seen once the Election has ended
+			if (Date.now() < election.endDate) {
+				throw new PollsNotClosedError(election.endDate);
+			}
+
+			return Election.aggregate([
+				// Use only the polls in this Election
+				{ $match: { name: req.params.electionName } },
+				// Unwind the ballots first, and then each of their choices.
+				// "$ballots" has to be unwinded first because
+				// "$ballots.choices" would not work otherwise
+				{ $unwind: '$ballots' },
+				{ $unwind: '$ballots.choices' },
+				// Extract all the votes from all the ballots:
+				// 	[{
+				// 		"poll": "<poll_name_1>",
+				// 		"candidate": ObjectId("...")
+				// 	}, { ... }]
+				{
+					$project: {
+						poll: '$ballots.choices.poll',
+						candidate: '$ballots.choices.candidate',
+					},
+				},
+				// Calculate the count for each poll-candidate pair:
+				// 	[{
+				// 		"_id": {
+				// 			"poll": "<poll_name_1>",
+				// 			"candidate": ObjectId("...")
+				// 		},
+				// 		"votes": <n_votes>
+				// 	}, { ... }]
+				{
+					$group: {
+						_id: {
+							poll: '$poll',
+							candidate: '$candidate',
+						},
+						votes: { $sum: 1 },
+					},
+				},
+				// Sort the pairs by amount of votes in descending order. Thus
+				// it's safe to take the first item of "counts" as the poll's
+				// winner (as long as there isn't a tie or it's null)
+				{ $sort: { votes: -1 } },
+				// Group the pairs by poll:
+				// 	[{
+				// 		"poll": "<poll_name_1>",
+				// 		"counts": [{
+				// 				"candidate": ObjectId("..."),
+				// 				"votes": <n_votes>
+				// 		}, { ... }]
+				// 	}, { ... }]
+				{
+					$group: {
+						_id: '$_id.poll',
+						poll: { $first: '$_id.poll' },
+						counts: {
+							$push: {
+								candidate: '$_id.candidate',
+								votes: '$votes',
+							},
+						},
+					},
+				},
+				// Hide the result's _ids (which have the same value as "poll",
+				// but are required for the aggregation to work properly
+				{ $project: { _id: false } },
+			]);
+		})
+		.then(result => User.populate(result, {
+			path: 'counts.candidate',
+			select: 'alias name',
+		}))
+		.then(result => res.json(result))
 		.catch(e => next(e))
 );

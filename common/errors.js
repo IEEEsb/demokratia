@@ -77,6 +77,14 @@ class PollsClosedError extends DemokratiaError {
 }
 module.exports.PollsClosedError = PollsClosedError;
 
+class PollsNotClosedError extends DemokratiaError {
+	constructor(closingDate) {
+		super('The polls are still open, you must wait until they close '
+			+ `(${closingDate.toISOString()})`, 'polls_still_open', 400);
+	}
+}
+module.exports.PollsNotClosedError = PollsNotClosedError;
+
 class UnknownObjectError extends DemokratiaError {
 	constructor(objectType) {
 		super(`There are no "${objectType}" objects with such name`,
