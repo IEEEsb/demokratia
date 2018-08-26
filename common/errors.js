@@ -55,7 +55,7 @@ module.exports.MissingRolesError = MissingRolesError;
 class UnknownObjectError extends DemokratiaError {
 	constructor(objectType) {
 		super(`There are no "${objectType}" objects with such name`,
-			'unknown_poll', 404);
+			'unknown_object', 404);
 	}
 }
 module.exports.UnknownObjectError = UnknownObjectError;
