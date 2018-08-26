@@ -38,6 +38,7 @@ module.exports.validators = {
 			censusSize: Joi.any().forbidden(),
 			createdDate: Joi.any().forbidden(),
 			polls: Joi.any().forbidden(),
+			ballots: Joi.any().forbidden(),
 		},
 	},
 	poll: {
@@ -51,6 +52,15 @@ module.exports.validators = {
 		body: {
 			alias: Joi.string().required(),
 			proposal: Joi.string().required(),
+		},
+	},
+	vote: {
+		body: {
+			choices: Joi.array().required().items(Joi.object({
+				poll: Joi.string().required(),
+				candidate: Joi.string().hex().length(24, 'ascii').allow(null)
+					.required(),
+			})),
 		},
 	},
 };

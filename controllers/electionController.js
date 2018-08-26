@@ -1,13 +1,17 @@
 const Election = require('../models/Election');
 const User = require('../models/UserModel');
+const Ballot = require('../models/Ballot');
+const { arraysEqual } = require('../common/util');
 const {
-	DuplicateObjectError, UnknownObjectError, WrongPropertiesError,
+	DuplicateObjectError, InvalidCandidateError, NotInCensusError,
+	PollsClosedError, UnknownObjectError, WrongBallotPollsError,
+	WrongPropertiesError,
 } = require('../common/errors');
 
 const { votingRole } = require('../config.json');
 
 module.exports.listElections = (req, res, next) => (
-	Election.find({}, '-_id -__v -longDescription -remainingVoters -polls')
+	Election.find({}, '-_id -__v -longDescription -remainingVoters -polls -ballots')
 		.then(elections => res.json(elections))
 		.catch(e => next(e))
 );
@@ -64,12 +68,83 @@ module.exports.deleteElection = (req, res, next) => (
 
 module.exports.getElection = (req, res, next) => (
 	Election.findOne({ name: req.params.electionName },
-		'-_id -__v -remainingVoters')
+		'-_id -__v -remainingVoters -ballots')
+		// The _ids are intentionally included here, to be able to put them in
+		// the ballot when voting
 		.populate('polls.candidacies.user', 'name alias')
 		.then((election) => {
 			if (election === null) throw new UnknownObjectError('Election');
 
 			return res.json(election);
+		})
+		.catch(e => next(e))
+);
+
+module.exports.vote = (req, res, next) => (
+	Election.findOne({ name: req.params.electionName })
+		.then((election) => {
+			if (election === null) throw new UnknownObjectError('Election');
+			if (Date.now() < election.startDate || election.endDate < Date.now()) {
+				throw new PollsClosedError(election.startDate, election.endDate);
+			}
+			if (!election.remainingVoters.find(
+				remVoter => remVoter.toString() === req.session.userId
+			)) {
+				throw new NotInCensusError();
+			}
+
+			const existingPollNames = election.polls.map(poll => poll.name);
+			const ballotPollNames = req.body.choices.map(choice => choice.poll);
+			// In order to assure the ballot's integrity and completeness, we
+			// require it to contain nothing but a vote for every poll in the
+			// election
+			if (!arraysEqual(existingPollNames, ballotPollNames)) {
+				throw new WrongBallotPollsError(existingPollNames);
+			}
+
+			const promiseStack = [];
+			for (let i = 0; i < req.body.choices.length; i++) {
+				const currentChoice = req.body.choices[i];
+
+				if (currentChoice.candidate === null) {
+					// If the candidate is null (blank vote), we still want to
+					// consider it a valid one. We add a non-null padding to
+					// make the indices in the result match the ones in
+					// req.body.choices
+					promiseStack.push(true);
+				} else {
+					// Check that the polls contain the chosen candidate, by
+					// looking for that pollName-candidate pair
+					promiseStack.push(Election.findOne({
+						polls: {
+							$elemMatch: {
+								name: currentChoice.poll,
+								'candidacies.user': currentChoice.candidate,
+							},
+						},
+					}));
+				}
+			}
+
+			return Promise.all(promiseStack);
+		})
+		.then((results) => {
+			// If any of the results is null, it means that the candidate could
+			// not be found in that specific poll
+			const violatingChoiceIdx = results.findIndex(r => r === null);
+			if (violatingChoiceIdx !== -1) {
+				throw new InvalidCandidateError(
+					req.body.choices[violatingChoiceIdx].poll
+				);
+			}
+
+			const ballot = new Ballot({ choices: req.body.choices });
+			return Election.update({ name: req.params.electionName }, {
+				$push: { ballots: ballot },
+				$pull: { remainingVoters: req.session.userId },
+			})
+				// Continue the promise chain here to have acess to the ballot
+				.then(res.json({ secret: ballot.id }));
 		})
 		.catch(e => next(e))
 );

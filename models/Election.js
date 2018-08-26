@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const PollSchema = require('./Poll').schema;
+const BallotSchema = require('./Ballot').schema;
 
 const { Schema } = mongoose;
 
@@ -25,6 +26,9 @@ const Election = new Schema({
 	// An array with all the things that are being decided in these
 	// elections
 	polls: [{ type: PollSchema }],
+	// An array with all the objects that represent the set of choices made by
+	// a single user for all of the polls
+	ballots: [{ type: BallotSchema }],
 });
 
 module.exports = mongoose.model('Election', Election);

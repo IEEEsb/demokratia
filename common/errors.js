@@ -38,6 +38,14 @@ class DuplicateObjectError extends DemokratiaError {
 }
 module.exports.DuplicateObjectError = DuplicateObjectError;
 
+class InvalidCandidateError extends DemokratiaError {
+	constructor(pollName) {
+		super(`Your choice for the poll "${pollName}" is not a valid candidate`,
+			'invalid_candidate', 400);
+	}
+}
+module.exports.InvalidCandidateError = InvalidCandidateError;
+
 class InvalidSessionError extends DemokratiaError {
 	constructor() {
 		super('Invalid session. Please log in again', 'invalid_session', 401);
@@ -52,6 +60,23 @@ class MissingRolesError extends DemokratiaError {
 }
 module.exports.MissingRolesError = MissingRolesError;
 
+class NotInCensusError extends DemokratiaError {
+	constructor() {
+		super('You are not allowed to vote in this election. Maybe you already did?',
+			'not_in_census', 403);
+	}
+}
+module.exports.NotInCensusError = NotInCensusError;
+
+class PollsClosedError extends DemokratiaError {
+	constructor(openingDate, closingDate) {
+		super('The polls are closed. Their opening window is set from '
+			+ `${openingDate.toISOString()} to ${closingDate.toISOString()}`,
+		'polls_closed', 400);
+	}
+}
+module.exports.PollsClosedError = PollsClosedError;
+
 class UnknownObjectError extends DemokratiaError {
 	constructor(objectType) {
 		super(`There are no "${objectType}" objects with such name`,
@@ -59,6 +84,15 @@ class UnknownObjectError extends DemokratiaError {
 	}
 }
 module.exports.UnknownObjectError = UnknownObjectError;
+
+class WrongBallotPollsError extends DemokratiaError {
+	constructor(expectedPolls) {
+		super('The ballot must contain exactly one vote for each of the '
+			+ `following polls: ${expectedPolls.join(', ')}`,
+		'wrong_ballot_polls', 400);
+	}
+}
+module.exports.WrongBallotPollsError = WrongBallotPollsError;
 
 class WrongPropertiesError extends DemokratiaError {
 	constructor() {
