@@ -1,9 +1,10 @@
 const express = require('express');
-const validate = require('express-validation');
 const authController = require('./controllers/authController');
 const electionController = require('./controllers/electionController');
 const pollController = require('./controllers/pollController');
-const validators = require('./controllers/validators');
+const {
+	validators, validate, validateWithoutStripping,
+} = require('./controllers/validators');
 
 const router = express.Router();
 
@@ -24,7 +25,8 @@ router.use(authController.adminRequired);
 router.post('/api/elections', validate(validators.election),
 	electionController.addElection);
 router.patch('/api/elections/:electionName',
-	validate(validators.updateElection), electionController.updateElection);
+	validateWithoutStripping(validators.updateElection),
+	electionController.updateElection);
 router.delete('/api/elections/:electionName',
 	electionController.deleteElection);
 router.post('/api/elections/:electionName/polls', validate(validators.poll),

@@ -1,4 +1,4 @@
-const { ValidationError } = require('express-validation');
+const { isCelebrate } = require('celebrate');
 
 class DemokratiaError extends Error {
 	constructor(message, code, httpStatus) {
@@ -76,13 +76,13 @@ module.exports.globalErrorHandler = (err, req, res, next) => {
 		return res.status(err.httpStatus).json(err.errObject);
 	}
 	// The exception for parameter validation problems is already provided
-	// by express-validation, using that one to put the violations in the
-	// error object as well
-	if (err instanceof ValidationError) {
+	// by celebrate, using that one to put the violations in the error object
+	// as well
+	if (isCelebrate(err)) {
 		return res.status(400).json({
 			message: 'Invalid parameters',
 			code: 'invalid_parameters',
-			violations: err.errors,
+			violations: err.details,
 		});
 	}
 	// Unknown error, something we haven't handled (and a potential bug).

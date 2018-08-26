@@ -1,12 +1,19 @@
-const Joi = require('joi');
+const { Joi, celebrate } = require('celebrate');
 
-// Remove any parameter that isn't explicitly validated here. Useful for using
-// default values in Mongoose models as automatic setters
-Joi.any().options({
-	stripUnknown: true,
-});
+// Customize the default settings for Joi's validator, in a way that properties
+// not defined in the validation schema don't produce any error, but are
+// removed from the request
+module.exports.validate = (validator, options) => (
+	celebrate(validator, { stripUnknown: true, allowUnknown: true, ...options })
+);
+// A version of the validator that doesn't remove undefined properties from the
+// response. Useful for validations that only forbid certain keys (like for
+// updates)
+module.exports.validateWithoutStripping = (validator, options) => (
+	celebrate(validator, { allowUnknown: true, ...options })
+);
 
-module.exports = {
+module.exports.validators = {
 	login: {
 		body: {
 			alias: Joi.string().required(),
