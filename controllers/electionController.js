@@ -230,3 +230,18 @@ module.exports.results = (req, res, next) => (
 		.then(result => res.json(result))
 		.catch(e => next(e))
 );
+
+module.exports.checkBallot = (req, res, next) => (
+	Election.findOne({ name: req.params.electionName })
+		.then((election) => {
+			if (election === null) throw new UnknownObjectError('Election');
+
+			return Election.findOne({
+				name: req.params.electionName,
+				ballots: { $elemMatch: { _id: req.params.token } },
+			}, '-_id ballots.choices.$')
+				.populate('ballots.choices.candidate', 'name alias');
+		})
+		.then(election => res.json(election.ballots[0]))
+		.catch(e => next(e))
+);

@@ -63,4 +63,9 @@ module.exports.validators = {
 			})),
 		},
 	},
+	checkBallot: {
+		params: {
+			token: Joi.string().hex().length(24),
+		},
+	},
 };

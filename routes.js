@@ -21,6 +21,9 @@ router.get('/api/elections/:electionName/electable',
 router.post('/api/elections/:electionName/vote',
 	validateWithoutStripping(validators.vote), electionController.vote);
 router.get('/api/elections/:electionName/results', electionController.results);
+router.get('/api/elections/:electionName/check/:token',
+	validateWithoutStripping(validators.checkBallot),
+	electionController.checkBallot);
 
 // Endpoints limited to administrators
 router.use(authController.adminRequired);
