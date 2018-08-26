@@ -85,6 +85,14 @@ module.exports.globalErrorHandler = (err, req, res, next) => {
 			violations: err.details,
 		});
 	}
+	// Errors produced by Express's body-parser, that are thrown whenever the
+	// body cannot be parsed because it isn't valid JSON
+	if (err.type === 'entity.parse.failed') {
+		return res.status(400).json({
+			message: 'Invalid JSON object in the request\'s body',
+			code: 'invalid_json_body',
+		});
+	}
 	// Unknown error, something we haven't handled (and a potential bug).
 	// Throw an internal server error and display it in the logs
 	console.error(err); // eslint-disable-line no-console
