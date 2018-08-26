@@ -28,9 +28,14 @@ following fields:
     },
     "store": {
         "secret": "some_session_secret"
-    }
+    },
+    "logFile": "/path/to/demokratia/logs.log (optional)"
 }
 ```
+
+If you set `logFile`, all the HTTP requests will be registered in the specified
+file. Please note that *demokratia* will create the file if needed, but the
+parent directory must exist beforehand.
 
 Then install the dependencies, build the frontend files and start the server.
 We recommend using Node v8.11.0 or superior. It may work in other versions, but

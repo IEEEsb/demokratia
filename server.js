@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 const express = require('express');
+const fs = require('fs');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
@@ -29,6 +31,21 @@ mongoose.connect(config.mongo.serverUrl, {
 }).then(() => {
 	console.log(`Connected to MongoDB instance at ${config.mongo.serverUrl}`);
 
+	// Development request logger
+	if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
+	// Request logger stored in a file, mostly for production
+	if (config.logFile) {
+		// Create stream for writing to the logs file. The "a" flag stands for
+		// "append", and will create the file (not the parent dir!) if it
+		// doesn't exist
+		const stream = fs.createWriteStream(config.logFile, { flags: 'a' });
+		morgan.token('user', (req) => {
+			if (req.session) return req.session.userId;
+			return 'not loggged in';
+		});
+		app.use(morgan('[:date[iso]] :remote-addr (:user) :method :url :status'
+			+ ':res[content-length] B - :response-time ms', { stream }));
+	}
 	// Parser for the requests' body
 	app.use(express.json({ limit: '50mb' }));
 	app.use(express.urlencoded({ extended: false }));
