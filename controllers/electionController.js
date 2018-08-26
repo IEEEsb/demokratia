@@ -15,9 +15,11 @@ module.exports.listElections = (req, res, next) => (
 module.exports.addElection = (req, res, next) => (
 	User.find({ roles: votingRole })
 		.distinct('_id') // Return an array of ids, rather than objects
-		.then(userIds => (
-			Election.create({ remainingVoters: userIds, ...req.body })
-		))
+		.then(userIds => Election.create({
+			remainingVoters: userIds,
+			censusSize: userIds.length,
+			...req.body,
+		}))
 		.then(election => res.json(election))
 		.catch((e) => {
 			// E11000 is Mongo's error for duplicate key

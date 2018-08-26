@@ -28,6 +28,7 @@ module.exports = {
 		// at all (not even admins)
 		body: {
 			remainingVoters: Joi.any().forbidden(),
+			censusSize: Joi.any().forbidden(),
 			createdDate: Joi.any().forbidden(),
 			polls: Joi.any().forbidden(),
 		},
