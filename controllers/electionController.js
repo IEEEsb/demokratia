@@ -80,6 +80,23 @@ module.exports.getElection = (req, res, next) => (
 		.catch(e => next(e))
 );
 
+module.exports.checkVoter = (req, res, next) => (
+	Election.findOne({ name: req.params.electionName })
+		.then((election) => {
+			if (election === null) throw new UnknownObjectError('Election');
+
+			// Check if this user can vote in this specific poll (i. e. they
+			// haven't voted before)
+			if (!election.remainingVoters.find(
+				remVoter => remVoter.toString() === req.session.userId
+			)) {
+				throw new NotInCensusError();
+			}
+			return res.sendStatus(200);
+		})
+		.catch(e => next(e))
+);
+
 module.exports.vote = (req, res, next) => (
 	Election.findOne({ name: req.params.electionName })
 		.then((election) => {

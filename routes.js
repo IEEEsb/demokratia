@@ -16,6 +16,8 @@ router.use(authController.authRequired);
 
 router.get('/api/elections', electionController.listElections);
 router.get('/api/elections/:electionName', electionController.getElection);
+router.get('/api/elections/:electionName/can_vote',
+	electionController.checkVoter);
 router.post('/api/elections/:electionName/vote',
 	validateWithoutStripping(validators.vote), electionController.vote);
 router.get('/api/elections/:electionName/results', electionController.results);
