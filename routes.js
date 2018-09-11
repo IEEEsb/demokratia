@@ -16,8 +16,6 @@ router.use(authController.authRequired);
 
 router.get('/api/elections', electionController.listElections);
 router.get('/api/elections/:electionName', electionController.getElection);
-router.get('/api/elections/:electionName/electable',
-	pollController.listPotentialCandidates);
 router.post('/api/elections/:electionName/vote',
 	validateWithoutStripping(validators.vote), electionController.vote);
 router.get('/api/elections/:electionName/results', electionController.results);
@@ -35,6 +33,8 @@ router.patch('/api/elections/:electionName',
 	electionController.updateElection);
 router.delete('/api/elections/:electionName',
 	electionController.deleteElection);
+router.get('/api/elections/:electionName/electable',
+	pollController.listPotentialCandidates);
 router.post('/api/elections/:electionName/polls', validate(validators.poll),
 	pollController.addPoll);
 router.patch('/api/elections/:electionName/polls/:pollName',
