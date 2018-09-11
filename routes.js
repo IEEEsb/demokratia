@@ -14,6 +14,7 @@ router.post('/api/logout', authController.logout);
 // Endpoints that require authentication
 router.use(authController.authRequired);
 
+router.get('/api/user', authController.getUser);
 router.get('/api/elections', electionController.listElections);
 router.get('/api/elections/:electionName', electionController.getElection);
 router.get('/api/elections/:electionName/can_vote',

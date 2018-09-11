@@ -50,6 +50,16 @@ module.exports.login = (req, res, next) => {
 		.catch(e => next(e));
 };
 
+module.exports.getUser = (req, res, next) => (
+	User.findOne({ _id: req.session.userId }, '-_id name alias')
+		.then((user) => {
+			if (user === null) throw new AuthenticationRequiredError();
+
+			return res.json(user);
+		})
+		.catch(e => next(e))
+);
+
 module.exports.logout = (req, res) => (
 	req.session.destroy((e) => {
 		if (e) throw e;
