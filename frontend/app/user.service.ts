@@ -36,6 +36,16 @@ export class UserService {
 		return this.userSubject.asObservable();
 	}
 
+	update() {
+		this.http.get<User>('api/user')
+		.pipe(catchError(this.handleError))
+		.subscribe(
+			(user) => {
+				this.userSubject.next(user);
+			}
+		);
+	}
+
 	private handleError(error: HttpErrorResponse) {
 
 		console.log(error);
