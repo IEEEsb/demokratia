@@ -13,7 +13,7 @@ import { Election } from '../../models/Election';
 export class ElectionService {
 
 	private elections: Election[] = [];
-	private timeout = 250;
+	private timeout = 100;
 
 	private electionsSubject: Subject<Election[]> = new Subject<Election[]>();
 	private loadingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
