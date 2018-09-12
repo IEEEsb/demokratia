@@ -47,14 +47,14 @@ export class DateRangePickerComponent implements OnInit, OnChanges {
 	}
 
 	getDate(date: Date): NgbDateStruct {
-		return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() }
+		return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
 	}
 
-	setDate(date: Date, dateStruct: NgbDateStruct): Date{
+	setDate(date: Date, dateStruct: NgbDateStruct): Date {
 		date.setFullYear(dateStruct.year);
 		date.setMonth(dateStruct.month - 1);
 		date.setDate(dateStruct.day);
-		return date
+		return date;
 	}
 
 	constructor(calendar: NgbCalendar) {
@@ -68,19 +68,18 @@ export class DateRangePickerComponent implements OnInit, OnChanges {
 
 
 	ngOnChanges(changes: SimpleChanges) {
-		console.log(changes);
-		if(changes.startDate && this.startDate) {
+		if (changes.startDate && this.startDate) {
 			this.fromTime = this.getTime(this.startDate);
 			this.fromDate = this.getDate(this.startDate);
 		}
-		if(changes.endDate && this.endDate) {
+		if (changes.endDate && this.endDate) {
 			this.toTime = this.getTime(this.endDate);
 			this.toDate = this.getDate(this.endDate);
 		}
 	}
 
 	onDateSelection(date: NgbDateStruct) {
-		if (this.dateState == 0) {
+		if (this.dateState === 0) {
 			this.fromDate = date;
 			this.toDate = null;
 			this.dateState = 1;
@@ -92,14 +91,14 @@ export class DateRangePickerComponent implements OnInit, OnChanges {
 	}
 
 	updateDate() {
-		if(this.fromDate) {
+		if (this.fromDate) {
 			let date = new Date();
 			date = this.setDate(date, this.fromDate);
 			date = this.setTime(date, this.fromTime);
 			this.startDateChange.emit(date);
 		}
 
-		if(this.toDate) {
+		if (this.toDate) {
 			let to = new Date();
 			to = this.setDate(to, this.toDate);
 			to = this.setTime(to, this.toTime);

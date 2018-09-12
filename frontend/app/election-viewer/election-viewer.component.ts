@@ -15,7 +15,7 @@ export class ElectionViewerComponent implements OnInit {
 	election: Election ;
 	currentDate: Date = new Date();
 
-	error: String = "";
+	error = '';
 
 	constructor(private electionService: ElectionService, private router: Router, private route: ActivatedRoute) { }
 
@@ -27,11 +27,10 @@ export class ElectionViewerComponent implements OnInit {
 						this.election = election;
 					},
 					(error) => {
-						console.log("Error: ", error);
-						this.error = "Esas elecciones no existen";
+						this.error = 'Esas elecciones no existen';
 						this.router.navigate(['/elections']);
 					}
-				)
+				);
 			} else {
 				this.router.navigate(['/elections']);
 			}

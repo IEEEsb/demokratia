@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
 			(error) => {
 				this.router.navigate(['/login']);
 			}
-		)
+		);
 
 	}
 }

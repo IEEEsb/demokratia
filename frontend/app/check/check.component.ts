@@ -14,10 +14,10 @@ export class CheckComponent implements OnInit {
 
 	election: Election;
 
-	token: string = "";
+	token = '';
 	choices: any[];
 
-	error: String = "";
+	error: String = '';
 
 	constructor(private electionService: ElectionService, private router: Router, private route: ActivatedRoute) {}
 
@@ -29,11 +29,10 @@ export class CheckComponent implements OnInit {
 						this.election = election;
 					},
 					(error) => {
-						console.log("Error: ", error);
-						this.error = "Esas elecciones no existen";
+						this.error = 'Esas elecciones no existen';
 						this.router.navigate(['/elections']);
 					}
-				)
+				);
 			} else {
 				this.router.navigate(['/elections']);
 			}
@@ -46,7 +45,7 @@ export class CheckComponent implements OnInit {
 				this.choices = choices.choices;
 			},
 			(error) => {
-				this.error = "¡Token inválido!"
+				this.error = '¡Token inválido!';
 			}
 		);
 	}

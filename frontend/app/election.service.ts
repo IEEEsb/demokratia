@@ -13,7 +13,7 @@ import { Election } from '../../models/Election';
 export class ElectionService {
 
 	private elections: Election[] = [];
-	private timeout: number = 250;
+	private timeout = 250;
 
 	private electionsSubject: Subject<Election[]> = new Subject<Election[]>();
 	private loadingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -51,7 +51,7 @@ export class ElectionService {
 		.pipe(
 			delay(this.timeout),
 			tap(() => {
-				const electionIndex = this.elections.findIndex(election => election.name == electionName);
+				const electionIndex = this.elections.findIndex(election => election.name === electionName);
 				this.elections.splice(electionIndex, 1);
 				this.electionsSubject.next(this.elections);
 				this.loadingService.unsetLoading();
@@ -67,8 +67,8 @@ export class ElectionService {
 			delay(this.timeout),
 			tap((election) => {
 				election = this.parseElection(election);
-				const electionIndex = this.elections.findIndex(election => election.name == electionName);
-				if(electionIndex < 0) {
+				const electionIndex = this.elections.findIndex(election => election.name === electionName);
+				if (electionIndex < 0) {
 					this.elections = this.elections.concat([election]);
 				} else {
 					this.elections[electionIndex] = election;
@@ -81,7 +81,7 @@ export class ElectionService {
 	}
 
 	updateElection(election: Election) {
-		var election = Object.assign({}, election);
+		election = Object.assign({}, election);
 		this.loadingService.setLoading();
 		delete election.censusSize;
 		delete election.createdDate;
@@ -98,7 +98,7 @@ export class ElectionService {
 
 	addPoll(electionName: string, poll: any) {
 		this.loadingService.setLoading();
-		if(!poll.description) {
+		if (!poll.description) {
 			delete poll.description;
 		}
 		return this.http.post<any>('/api/elections/' + electionName + '/polls/', poll)
@@ -113,7 +113,7 @@ export class ElectionService {
 
 	updatePoll(electionName: string, poll: any) {
 		this.loadingService.setLoading();
-		if(!poll.description) {
+		if (!poll.description) {
 			delete poll.description;
 		}
 		return this.http.patch<any>('/api/elections/' + electionName + '/polls/' + poll.name, poll)
@@ -189,7 +189,7 @@ export class ElectionService {
 
 	vote(electionName: string, choices: any) {
 		this.loadingService.setLoading();
-		return this.http.post<any>('api/elections/' + electionName + '/vote', {"choices": choices})
+		return this.http.post<any>('api/elections/' + electionName + '/vote', {'choices': choices})
 		.pipe(
 			delay(this.timeout),
 			tap((secret) => {
@@ -244,15 +244,12 @@ export class ElectionService {
 		election.createdDate = new Date(election.createdDate);
 		election.startDate = new Date(election.startDate);
 		election.endDate = new Date(election.endDate);
-		console.log("Parse: ", election);
 		return election;
 	}
 
 	private handleError(error: HttpErrorResponse) {
 
-		console.log(this);
 		this.loadingService.unsetLoading();
-		console.log(error);
 		let errorText;
 		if (error.error instanceof ProgressEvent) {
 			// A client-side or network error occurred. Handle it accordingly.

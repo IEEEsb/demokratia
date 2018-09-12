@@ -14,11 +14,11 @@ export class VoteComponent implements OnInit {
 
 	election: Election;
 
-	selectedPoll: number = -1;
+	selectedPoll = -1;
 	choices = [];
 	token: string;
 
-	error: String = "";
+	error = '';
 
 	constructor(private electionService: ElectionService, private router: Router, private route: ActivatedRoute) {}
 
@@ -34,21 +34,20 @@ export class VoteComponent implements OnInit {
 							(error) => {
 								this.router.navigate(['/elections/' + this.election.name + '/view']);
 							}
-						)
+						);
 						this.selectedPoll = 0;
-						for(let poll of this.election.polls){
+						for (const poll of this.election.polls) {
 							this.choices.push({
-								"poll": poll.name,
-								"candidate": null
+								'poll': poll.name,
+								'candidate': null
 							});
 						}
 					},
 					(error) => {
-						console.log("Error: ", error);
-						this.error = "Esas elecciones no existen";
+						this.error = 'Esas elecciones no existen';
 						this.router.navigate(['/elections']);
 					}
-				)
+				);
 			} else {
 				this.router.navigate(['/elections']);
 			}
@@ -56,24 +55,24 @@ export class VoteComponent implements OnInit {
 	}
 
 	getUserName(pollName: string, userId: string) {
-		if(userId){
-			let pollIndex = this.election.polls.findIndex(poll => poll.name == pollName);
-			return this.election.polls[pollIndex].candidacies[this.election.polls[pollIndex].candidacies.findIndex(c => c.user._id == userId)].user.name;
+		if (userId) {
+			const pollIndex = this.election.polls.findIndex(poll => poll.name === pollName);
+			return this.election.polls[pollIndex].candidacies[this.election.polls[pollIndex].candidacies.findIndex(c => c.user._id === userId)].user.name;
 		} else {
-			return "Voto en blanco"
+			return 'Voto en blanco';
 		}
 	}
 
 	previous() {
-		if(this.selectedPoll == -1) {
-			this.selectedPoll = this.election.polls.length - 1
+		if (this.selectedPoll === -1) {
+			this.selectedPoll = this.election.polls.length - 1;
 		} else {
 			this.selectedPoll -= 1;
 		}
 	}
 
 	next() {
-		if(this.selectedPoll == this.election.polls.length - 1) {
+		if (this.selectedPoll === this.election.polls.length - 1) {
 			this.selectedPoll = -1;
 		} else {
 			this.selectedPoll += 1;
@@ -81,7 +80,7 @@ export class VoteComponent implements OnInit {
 	}
 
 	submit() {
-		if(confirm("¿Estás seguro de tu elección?")) {
+		if (confirm('¿Estás seguro de tu elección?')) {
 			this.electionService.vote(this.election.name, this.choices).subscribe(
 				(secret) => {
 					this.token = secret.secret;

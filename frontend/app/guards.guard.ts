@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
 		return new Promise<boolean>((resolve, reject) => {
 			this.userService.getUser().subscribe(
 				(user) => {
-					if(user) {
+					if (user) {
 						resolve(true);
 					} else {
 						resolve(false);
@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate {
 				(error) => {
 					resolve(false);
 				}
-			)
+			);
 		});
 	}
 }
@@ -43,7 +43,7 @@ export class LoggedOutGuard implements CanActivate {
 		return new Promise<boolean>((resolve, reject) => {
 			this.userService.getUser().subscribe(
 				(user) => {
-					if(user) {
+					if (user) {
 						resolve(false);
 						this.router.navigate(['/elections']);
 					} else {
@@ -53,7 +53,7 @@ export class LoggedOutGuard implements CanActivate {
 				(error) => {
 					resolve(true);
 				}
-			)
+			);
 		});
 	}
 }
@@ -69,7 +69,7 @@ export class AdminGuard implements CanActivate {
 		return new Promise<boolean>((resolve, reject) => {
 			this.userService.getUser().subscribe(
 				(user) => {
-					if(user.roles.includes('admin')) {
+					if (user.roles.includes('admin')) {
 						resolve(true);
 					} else {
 						resolve(false);
@@ -79,7 +79,7 @@ export class AdminGuard implements CanActivate {
 				(error) => {
 					resolve(false);
 				}
-			)
+			);
 		});
 	}
 }
@@ -101,7 +101,7 @@ export class ElectionExistGuard implements CanActivate {
 					(error) => {
 						resolve(false);
 					}
-				)
+				);
 			} else {
 				resolve(false);
 			}
@@ -121,8 +121,8 @@ export class PollExistGuard implements CanActivate {
 			if (route.params['electionName']) {
 				this.electionService.getElection(route.params['electionName']).subscribe(
 					(election) => {
-						const pollIndex = election.polls.findIndex(poll => poll.name == route.params['pollName']);
-						if(pollIndex >= 0){
+						const pollIndex = election.polls.findIndex(poll => poll.name === route.params['pollName']);
+						if (pollIndex >= 0) {
 							resolve(true);
 						} else {
 							resolve(false);
@@ -133,7 +133,7 @@ export class PollExistGuard implements CanActivate {
 						resolve(false);
 						this.router.navigate(['/elections']);
 					}
-				)
+				);
 			} else {
 				resolve(false);
 				this.router.navigate(['/elections']);
@@ -162,13 +162,13 @@ export class CanVoteGuard implements CanActivate {
 								resolve(false);
 								this.router.navigate(['/elections/' + election.name + '/view']);
 							}
-						)
+						);
 					},
 					(error) => {
 						resolve(false);
 						this.router.navigate(['/elections/']);
 					}
-				)
+				);
 			} else {
 				resolve(false);
 				this.router.navigate(['/elections/']);
@@ -197,13 +197,13 @@ export class HasVotedGuard implements CanActivate {
 							(error) => {
 								resolve(true);
 							}
-						)
+						);
 					},
 					(error) => {
 						resolve(false);
 						this.router.navigate(['/elections/']);
 					}
-				)
+				);
 			} else {
 				resolve(false);
 				this.router.navigate(['/elections']);
@@ -224,8 +224,8 @@ export class AfterEndElectionGuard implements CanActivate {
 			if (route.params['electionName']) {
 				this.electionService.getElection(route.params['electionName']).subscribe(
 					(election) => {
-						let now = new Date();
-						if(now > election.endDate) {
+						const now = new Date();
+						if (now > election.endDate) {
 							resolve(true);
 						} else {
 							resolve(false);
@@ -236,7 +236,7 @@ export class AfterEndElectionGuard implements CanActivate {
 						resolve(false);
 						this.router.navigate(['/elections/']);
 					}
-				)
+				);
 			} else {
 				resolve(false);
 				this.router.navigate(['/elections']);
@@ -257,8 +257,8 @@ export class AfterStartElectionGuard implements CanActivate {
 			if (route.params['electionName']) {
 				this.electionService.getElection(route.params['electionName']).subscribe(
 					(election) => {
-						let now = new Date();
-						if(now > election.startDate) {
+						const now = new Date();
+						if (now > election.startDate) {
 							resolve(true);
 						} else {
 							resolve(false);
@@ -269,7 +269,7 @@ export class AfterStartElectionGuard implements CanActivate {
 						resolve(false);
 						this.router.navigate(['/elections/']);
 					}
-				)
+				);
 			} else {
 				resolve(false);
 				this.router.navigate(['/elections']);

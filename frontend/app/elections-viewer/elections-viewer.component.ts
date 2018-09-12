@@ -32,7 +32,7 @@ export class ElectionsViewerComponent implements OnInit {
 	}
 
 	delete(index) {
-		if(confirm("¿Seguro que quieres borrarlo?")) {
+		if (confirm('¿Seguro que quieres borrarlo?')) {
 			this.electionService.deleteElection(this.elections[index].name).subscribe(
 				() => {
 				},

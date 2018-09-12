@@ -28,15 +28,14 @@ export class PollsEditorComponent implements OnInit {
 
 	ngOnInit() {
 		this.route.params.subscribe(params => {
-			console.log(params);
 			if (params['electionName']) {
 				this.electionService.getElection(params['electionName']).subscribe(
 					(election) => {
 						this.election = election;
-						if(params['pollName']) {
+						if (params['pollName']) {
 							this.editing = true;
-							const pollIndex = this.election.polls.findIndex(poll => poll.name == params['pollName']);
-							if(pollIndex >= 0){
+							const pollIndex = this.election.polls.findIndex(poll => poll.name === params['pollName']);
+							if (pollIndex >= 0) {
 								this.poll = this.election.polls[pollIndex];
 							} else {
 								this.router.navigate(['/elections/' + this.election.name]);
@@ -47,7 +46,6 @@ export class PollsEditorComponent implements OnInit {
 						}
 
 						this.electionService.getPotentialCandidates(this.election.name).subscribe((candidates) => {
-							console.log(candidates);
 							this.potentialCandidates = candidates.users;
 						});
 
@@ -55,7 +53,7 @@ export class PollsEditorComponent implements OnInit {
 					},
 					(error) => {
 					}
-				)
+				);
 			}
 		});
 
@@ -66,7 +64,7 @@ export class PollsEditorComponent implements OnInit {
 		debounceTime(200),
 		distinctUntilChanged(),
 		map(term => term.length < 2 ? [] : this.potentialCandidates.filter(v =>
-			this.poll.candidacies.findIndex(candidacy => candidacy.user.alias == v.alias) < 0
+			this.poll.candidacies.findIndex(candidacy => candidacy.user.alias === v.alias) < 0
 			&&
 			(
 				v.alias.toLowerCase().indexOf(term.toLowerCase()) > -1
@@ -78,14 +76,13 @@ export class PollsEditorComponent implements OnInit {
 
 
 	addTempCandidate(event: NgbTypeaheadSelectItemEvent) {
-		if(this.poll.candidacies.findIndex(candidacy => candidacy.user.alias == event.item) >= 0 || this.potentialCandidates.findIndex(candidate => candidate.alias == event.item) < 0){
+		if (this.poll.candidacies.findIndex(candidacy => candidacy.user.alias === event.item) >= 0 || this.potentialCandidates.findIndex(candidate => candidate.alias === event.item) < 0) {
 			return event.preventDefault();
 		}
-		let candidateIndex = this.potentialCandidates.findIndex(candidate => candidate.alias == event.item);
+		const candidateIndex = this.potentialCandidates.findIndex(candidate => candidate.alias === event.item);
 
-		let candidacy = this.potentialCandidates[candidateIndex];
-		candidacy.proposal = "";
-		console.log(candidacy)
+		const candidacy = this.potentialCandidates[candidateIndex];
+		candidacy.proposal = '';
 		this.potentialCandidates.splice(candidateIndex, 1);
 		this.candidacies.push(candidacy);
 	}
@@ -97,15 +94,13 @@ export class PollsEditorComponent implements OnInit {
 
 	addCandidacy(index: number) {
 		let candidacy = this.candidacies[index];
-		//candidacy.name = undefined;
 		this.electionService.addCandidacy(this.election.name, this.poll.name, candidacy).subscribe(
 			() => {
 				candidacy = this.candidacies[index];
-				console.log(candidacy);
 				candidacy.user = {
-					"name": candidacy.name,
-					"alias": candidacy.alias
-				}
+					'name': candidacy.name,
+					'alias': candidacy.alias
+				};
 				candidacy.name = undefined;
 				candidacy.alias = undefined;
 				this.poll.candidacies.push(candidacy);
@@ -118,18 +113,17 @@ export class PollsEditorComponent implements OnInit {
 	}
 
 	deleteCandidacy(alias: string) {
-		let candidacyIndex = this.poll.candidacies.findIndex(candidate => candidate.user.alias == alias);
+		const candidacyIndex = this.poll.candidacies.findIndex(candidate => candidate.user.alias === alias);
 		this.electionService.deleteCandidacy(this.election.name, this.poll.name, alias).subscribe(() => {
 			this.poll.candidacies.splice(candidacyIndex, 1);
 			this.electionService.getPotentialCandidates(this.election.name).subscribe((candidates) => {
-				console.log(candidates);
 				this.potentialCandidates = candidates.users;
 			});
 		});
 	}
 
 	submit() {
-		if(this.editing) {
+		if (this.editing) {
 			this.electionService.updatePoll(this.election.name, this.poll).subscribe(
 				() => {
 				},

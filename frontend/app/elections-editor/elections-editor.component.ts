@@ -29,7 +29,7 @@ export class ElectionsEditorComponent implements OnInit {
 					},
 					(error) => {
 					}
-				)
+				);
 			} else {
 				this.editing = false;
 				this.election.startDate = new Date();
@@ -51,7 +51,7 @@ export class ElectionsEditorComponent implements OnInit {
 	}
 
 	submit() {
-		if(this.editing) {
+		if (this.editing) {
 			this.electionService.updateElection(this.election).subscribe(
 				() => {
 				},

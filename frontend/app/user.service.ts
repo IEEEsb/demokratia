@@ -19,7 +19,6 @@ export class UserService {
 	}
 
 	login(alias: string, password: string) {
-		console.log(`alias: ${alias}, password: ${password}`);
 		const body = {
 			alias: alias,
 			password: password === '' ? '' : SHA256(password).toString()
@@ -57,7 +56,6 @@ export class UserService {
 
 	private handleError(error: HttpErrorResponse) {
 
-		console.log(error);
 		let errorText;
 		if (error.error instanceof ProgressEvent) {
 			// A client-side or network error occurred. Handle it accordingly.

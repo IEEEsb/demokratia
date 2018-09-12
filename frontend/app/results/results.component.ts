@@ -16,7 +16,7 @@ export class ResultsComponent implements OnInit {
 
 	results: any[];
 
-	error: String = "";
+	error = '';
 
 	constructor(private electionService: ElectionService, private router: Router, private route: ActivatedRoute) {}
 
@@ -32,14 +32,13 @@ export class ResultsComponent implements OnInit {
 							},
 							(error) => {
 							}
-						)
+						);
 					},
 					(error) => {
-						console.log("Error: ", error);
-						this.error = "Esas elecciones no existen";
+						this.error = 'Esas elecciones no existen';
 						this.router.navigate(['/elections']);
 					}
-				)
+				);
 			} else {
 				this.router.navigate(['/elections']);
 			}
