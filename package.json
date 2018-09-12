@@ -9,7 +9,7 @@
 		"watch-front": "ng build --watch --poll=1000",
 		"watch-back": "nodemon --ignore dist/ --ignore frontend/",
 		"dev": "concurrently --kill-others --raw --default-input-target 1 \"npm run watch-front\" \"npm run watch-back\"",
-		"build": "ng build --no-progress"
+		"build": "ng build --prod --no-progress"
 	},
 	"repository": {
 		"type": "git",
