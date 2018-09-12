@@ -5,3 +5,39 @@
 .dis-color(@color) {
 	color: lighten(@color, 30%);
 }
+
+.link {
+	color: @bt-color;
+	text-decoration: none;
+	&:hover {
+		color: @bt-hover-color;
+	}
+}
+
+.error {
+	color: @err-color !important;
+}
+
+.description {
+	color: @grey-color;
+	font-style: italic;
+}
+
+.button-link {
+	.link();
+	//font-size: 20px;
+	width: fit-content;
+	border: none;
+	background: none;
+	&.enabled {
+		cursor: pointer;
+		user-select: none;
+		&:focus {
+			outline: 0px;
+		}
+	}
+
+	&.disabled {
+		.dis-color(@bt-color);
+	}
+}

@@ -1,0 +1,57 @@
+<div class="container-fluid main h-100">
+	<div class="row h-100">
+		<div class="col">
+			<div class="form mt-5" *ngIf="election && !token">
+				<h1>{{election.title}}</h1>
+				<div *ngIf="election.polls && selectedPoll >= 0">
+					<h2>{{election.polls[selectedPoll].name}}</h2>
+					<p>{{election.polls[selectedPoll].question}}:</p>
+					<div class="input-group" *ngFor="let candidacy of election.polls[selectedPoll].candidacies">
+						<div class="input-group-prepend">
+							<div class="input-group-text">
+								<input type="radio" [value]="candidacy.user._id" [(ngModel)]="choices[selectedPoll].candidate">
+							</div>
+						</div>
+						<div class="input-group-append">
+							<span class="input-group-text bg-white">{{candidacy.user.name}}</span>
+						</div>
+
+					</div>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<div class="input-group-text">
+								<input type="radio" [value]="null" [(ngModel)]="choices[selectedPoll].candidate">
+							</div>
+						</div>
+						<div class="input-group-append">
+							<span class="input-group-text bg-white">Voto en blanco</span>
+						</div>
+					</div>
+					<a *ngIf="selectedPoll > 0" class="link float-left my-3" [routerLink]="" (click)="previous()">Anterior</a>
+					<a *ngIf="selectedPoll >= 0" class="link float-right my-3" [routerLink]="" (click)="next()">Siguiente</a>
+				</div>
+				<div *ngIf="election && election.polls && selectedPoll == -1">
+					<h2>Resumen</h2>
+					<p>Estos han sido tus votos:</p>
+					<div class="input-group" *ngFor="let choice of choices">
+						<div class="input-group-prepend">
+							<span class="input-group-text">{{choice.poll}}</span>
+						</div>
+						<div class="input-group-append">
+							<span class="input-group-text bg-white">{{getUserName(choice.poll, choice.candidate)}}</span>
+						</div>
+					</div>
+					<a class="link float-left my-3" [routerLink]="" (click)="previous()">Anterior</a>
+					<a class="link float-right my-3" [routerLink]="" (click)="submit()">Enviar</a>
+				</div>
+			</div>
+			<div class="form mt-5" *ngIf="election && token">
+				<h1>Hecho</h1>
+				<h2>Este es tu token:</h2>
+				<h3>{{token}}</h3>
+				<p>Con él podrás comprobar tu elección <a class="link" [routerLink]="'/elections/' + election.name + '/check'">aquí</a>.</p>
+				<p>Y el día {{election.endDate | date:'short'}} podrás comprobar los resultados.</p>
+			</div>
+		</div>
+	</div>
+</div>

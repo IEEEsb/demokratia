@@ -1,19 +1,24 @@
 <div class="container-fluid main d-flex flex-column">
-	<div class="row">
-		<h1 class="text-center mx-auto mt-5">Demokratia</h1>
-	</div>
 	<div class="row fill">
 		<div class="col-12 col-md-7 col-lg-5 col-xl-4 mx-auto flex-column fill d-flex">
+			<div class="justify-content-center w-25 mx-auto">
+				<img src="/assets/images/logo_colors_inverted.svg" class="img-fluid" alt="Responsive image">
+			</div>
+			<div class="row mt-3 mb-3 justify-content-between">
+				<a class="link my-auto" [routerLink]="" (click)="back()" *ngIf="user"><fa-icon [icon]="['fas', 'arrow-left']" size="3x"></fa-icon></a>
+				<div class="h1 mx-auto my-auto">Demokratia</div>
+				<a class="link my-auto" [routerLink]="" (click)="logout()" *ngIf="user">Logout</a>
+			</div>
 			<div class="row fill">
 				<div class="col">
 					<router-outlet></router-outlet>
 				</div>
 			</div>
-			<div class="row mx-1 footer">
+			<div class="row mt-3 mx-1 footer">
 				<div class="col text-left copyright">&copy; 2018 - Rama Universitaria del IEEE de Madrid</div>
-				<div class="col-auto text-right" *ngIf="user">Logout</div>
 			</div>
 		</div>
 	</div>
 
 </div>
+<app-loader [loading]="loading"></app-loader>

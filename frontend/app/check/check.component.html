@@ -1,0 +1,29 @@
+<div class="container-fluid main h-100">
+	<div class="row h-100">
+		<div class="col" *ngIf="election">
+
+			<h1>{{election.title}}</h1>
+			<div class="form mt-3" *ngIf="!choices">
+				<h4 class="mb-4">Introduce tu token para poder ver tus resultados:</h4>
+				<div class="input-group">
+					<input required type="text" class="form-control" name="token" placeholder="Introducir token" [(ngModel)]="token">
+					<div class="input-group-append">
+						<a class="link input-group-text bg-white" [routerLink]="" (click)="submit()">Enviar</a>
+					</div>
+				</div>
+				<div class="error">{{error}}</div>
+			</div>
+			<div class="form mt-3" *ngIf="choices">
+				<h4 class="mb-4">Estos han sido tus votos:</h4>
+				<div class="input-group" *ngFor="let choice of choices">
+					<div class="input-group-prepend">
+						<span class="input-group-text">{{choice.poll}}</span>
+					</div>
+					<div class="input-group-append">
+						<span class="input-group-text bg-white">{{choice.candidate ? choice.candidate.name : "Voto en blanco"}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

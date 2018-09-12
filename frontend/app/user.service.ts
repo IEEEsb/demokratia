@@ -19,7 +19,6 @@ export class UserService {
 	}
 
 	login(alias: string, password: string) {
-		console.log(`alias: ${alias}, password: ${password}`);
 		const body = {
 			alias: alias,
 			password: password === '' ? '' : SHA256(password).toString()
@@ -32,13 +31,31 @@ export class UserService {
 		);
 	}
 
+	logout() {
+		return this.http.post('api/logout', {})
+		.pipe(
+			tap(() => this.userSubject.next(null)),
+			catchError(this.handleError)
+		);
+	}
+
 	getUser() {
-		return this.userSubject.asObservable();
+		return this.http.get<User>('api/user')
+		.pipe(catchError(this.handleError));
+	}
+
+	update() {
+		this.http.get<User>('api/user')
+		.pipe(catchError(this.handleError))
+		.subscribe(
+			(user) => {
+				this.userSubject.next(user);
+			}
+		);
 	}
 
 	private handleError(error: HttpErrorResponse) {
 
-		console.log(error);
 		let errorText;
 		if (error.error instanceof ProgressEvent) {
 			// A client-side or network error occurred. Handle it accordingly.

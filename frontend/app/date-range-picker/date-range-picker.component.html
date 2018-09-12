@@ -1,0 +1,21 @@
+<div class="" *ngIf="startDate && endDate">
+	<div class="form-group">
+		<label>Fecha de inicio y final</label>
+		<ngb-datepicker #dp (select)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"></ngb-datepicker>
+		<ng-template #t let-date="date" let-focused="focused">
+			<span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+				{{ date.day }}
+			</span>
+		</ng-template>
+	</div>
+	<div class="row">
+		<div class="col">
+			<label>Hora inicio</label>
+			<ngb-timepicker name="fromTime" [(ngModel)]="fromTime" (ngModelChange)="updateDate()"></ngb-timepicker>
+		</div>
+		<div class="col">
+			<label>Hora final</label>
+			<ngb-timepicker name="toTime" [(ngModel)]="toTime" (ngModelChange)="updateDate()"></ngb-timepicker>
+		</div>
+	</div>
+</div>

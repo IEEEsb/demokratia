@@ -25,7 +25,7 @@ module.exports.addPoll = (req, res, next) => (
 		.then((result) => {
 			if (result.nModified === 0) throw new DuplicateObjectError('Poll');
 
-			return res.sendStatus(200);
+			return res.sendStatus(204);
 		})
 		.catch(e => next(e))
 );
@@ -75,7 +75,7 @@ module.exports.updatePoll = (req, res, next) => (
 			// didn't suffer any modifications at all, it just accepts the
 			// request and leaves the object unmutated
 
-			return res.sendStatus(200);
+			return res.sendStatus(204);
 		})
 		.catch(e => next(e))
 );
@@ -90,7 +90,7 @@ module.exports.deletePoll = (req, res, next) => (
 			// valid)
 			if (result.nModified === 0) throw new UnknownObjectError('Poll');
 
-			return res.sendStatus(200);
+			return res.sendStatus(204);
 		})
 		.catch(e => next(e))
 );
@@ -133,7 +133,7 @@ module.exports.addCandidate = (req, res, next) => {
 			// wasn't duplicate)
 			if (result.nModified === 0) throw new DuplicateObjectError('Candidate');
 
-			return res.sendStatus(200);
+			return res.sendStatus(204);
 		})
 		.catch(e => next(e));
 };
@@ -164,7 +164,7 @@ module.exports.deleteCandidate = (req, res, next) => (
 			// valid)
 			if (result.nModified === 0) throw new UnknownObjectError('Candidate');
 
-			return res.sendStatus(200);
+			return res.sendStatus(204);
 		})
 		.catch(e => next(e))
 );
