@@ -24,7 +24,7 @@ const routes: Routes = [
 	{ path: 'elections/:electionName/vote', component: VoteComponent, canActivate: [AuthGuard, ElectionExistGuard, CanVoteGuard]},
 	{ path: 'elections/:electionName/results', component: ResultsComponent, canActivate: [AuthGuard, ElectionExistGuard, AfterEndElectionGuard]},
 	{ path: 'elections/:electionName/check', component: CheckComponent, canActivate: [AuthGuard, ElectionExistGuard, AfterStartElectionGuard, HasVotedGuard]},
-	{ path: '**', redirectTo: './login' }
+	{ path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({
