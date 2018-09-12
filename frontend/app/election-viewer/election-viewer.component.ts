@@ -14,6 +14,7 @@ export class ElectionViewerComponent implements OnInit {
 
 	election: Election ;
 	currentDate: Date = new Date();
+	canVote = false;
 
 	error = '';
 
@@ -25,6 +26,14 @@ export class ElectionViewerComponent implements OnInit {
 				this.electionService.getElection(params['electionName']).subscribe(
 					(election) => {
 						this.election = election;
+						this.electionService.canVote(this.election.name).subscribe(
+							() => {
+								this.canVote = true;
+							},
+							(error) => {
+								this.canVote = false;
+							}
+						);
 					},
 					(error) => {
 						this.error = 'Esas elecciones no existen';
