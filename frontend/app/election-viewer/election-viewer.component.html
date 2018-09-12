@@ -1,0 +1,16 @@
+<div class="container-fluid main h-100">
+	<div class="row h-100">
+		<div class="col">
+			<div class="form mt-5" *ngIf="election">
+				<h1>{{election.title}}</h1>
+				<p>{{election.shortDescription}}</p>
+				<p>{{election.longDescription}}</p>
+				<p>Comienzo: {{election.startDate | date:'short'}}</p>
+				<p>Fin: {{election.endDate | date:'short'}}</p>
+				<a *ngIf="election.polls.length > 0 && election.startDate < currentDate && election.endDate > currentDate" class="link px-1 float-right" [routerLink]="'/elections/' + election.name + '/vote'">Votar</a>
+				<a *ngIf="election.startDate < currentDate" class="link px-1 float-right" [routerLink]="'/elections/' + election.name + '/check'">Comprobar</a>
+				<a *ngIf="election.endDate < currentDate" class="link px-1 float-right" [routerLink]="'/elections/' + election.name + '/results'">Resultados</a>
+			</div>
+		</div>
+	</div>
+</div>

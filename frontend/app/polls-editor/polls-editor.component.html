@@ -1,0 +1,60 @@
+<div class="container-fluid main h-100">
+	<div class="row h-100" *ngIf="election">
+		<div class="col">
+			<div class="form mt-5">
+				<h2>{{editing ? 'Editar' : 'Crear'}} Poll</h2>
+				<form (ngSubmit)="submit()" #pollForm="ngForm">
+					<div class="form-group">
+						<label for="name">Nombre</label>
+						<input required type="text" class="form-control" [ngClass]="name.valid ? 'is-valid' : 'is-invalid'" name="name" #name="ngModel" placeholder="Introducir nombre" [(ngModel)]="poll.name">
+					</div>
+					<div class="form-group">
+						<label for="question">Pregunta</label>
+						<input required type="text" class="form-control" [ngClass]="question.valid ? 'is-valid' : 'is-invalid'" name="question" #question="ngModel" placeholder="Introducir título" [(ngModel)]="poll.question">
+					</div>
+					<div class="form-group">
+						<label for="description">Descripción</label>
+						<input type="text" class="form-control" [ngClass]="description.valid ? 'is-valid' : 'is-invalid'" name="description" #description="ngModel" placeholder="Introducir descripción" [(ngModel)]="poll.description">
+					</div>
+					<div *ngIf="editing && poll">
+						<div class="row">
+							<div class="col">
+								<div class="h1 float-left">Candidatos</div><input type="text" class="form-control typeahead float-right" (selectItem)="addTempCandidate($event)" [ngbTypeahead]="search"/>
+							</div>
+
+						</div>
+						<ul class="list-group">
+							<li class="list-group-item" *ngFor="let candidacy of poll.candidacies; index as i">
+								<div>
+									<p class="float-left">{{candidacy.user.name}}({{candidacy.user.alias}})</p>
+									<div class="float-right">
+										<a class="link enabled error px-1" [routerLink]="" (click)="deleteCandidacy(candidacy.user.alias)">Eliminar</a>
+									</div>
+								</div>
+								<input type="text" class="form-control" [ngClass]="proposal.valid ? 'is-valid' : 'is-invalid'" name="proposal" #proposal="ngModel" placeholder="Introducir Propuesta" [(ngModel)]="candidacy.proposal">
+							</li>
+						</ul>
+
+						<ul class="list-group">
+							<li class="list-group-item" *ngFor="let candidacy of candidacies; index as i">
+								<div>
+									<p class="float-left">{{candidacy.name}}({{candidacy.alias}})</p>
+									<div class="float-right">
+										<a class="link enabled px-1" [routerLink]="" (click)="addCandidacy(i)">Añadir</a>
+										<a class="link enabled error px-1" [routerLink]="" (click)="deleteTempCandidacy(i)">Eliminar</a>
+									</div>
+								</div>
+								<input type="text" class="form-control" [ngClass]="tempProposal.valid ? 'is-valid' : 'is-invalid'" name="tempProposal" #tempProposal="ngModel" placeholder="Introducir Propuesta" [(ngModel)]="candidacy.proposal">
+
+
+							</li>
+						</ul>
+					</div>
+					<div class="form-group">
+						<input type="submit" class="submit button-link" [ngClass]="pollForm.invalid ? 'disabled': 'enabled'" [disabled]="pollForm.invalid" value="Acceder">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -45,7 +45,7 @@ module.exports.updateElection = (req, res, next) => (
 			// didn't suffer any modifications at all, it just accepts the
 			// request and leaves the object unmutated
 
-			return res.sendStatus(200);
+			return res.sendStatus(204);
 		})
 		.catch((e) => {
 			// E11000 is Mongo's error for duplicate key
@@ -61,7 +61,7 @@ module.exports.deleteElection = (req, res, next) => (
 			// Check if any Elections were deleted after the operation
 			if (result.n === 0) throw new UnknownObjectError('Election');
 
-			return res.sendStatus(200);
+			return res.sendStatus(204);
 		})
 		.catch(e => next(e))
 );
@@ -92,7 +92,7 @@ module.exports.checkVoter = (req, res, next) => (
 			)) {
 				throw new NotInCensusError();
 			}
-			return res.sendStatus(200);
+			return res.sendStatus(204);
 		})
 		.catch(e => next(e))
 );
@@ -160,7 +160,7 @@ module.exports.vote = (req, res, next) => (
 				$push: { ballots: ballot },
 				$pull: { remainingVoters: req.session.userId },
 			})
-				// Continue the promise chain here to have acess to the ballot
+				// Continue the promise chain here to have access to the ballot
 				.then(res.json({ secret: ballot.id }));
 		})
 		.catch(e => next(e))

@@ -15,7 +15,7 @@ export class LoadingService {
 		return this.loadingSubject.asObservable();
 	}
 
-	setLoading(): number {
+	setLoading() {
 		this.loadingSubject.next(true);
 	}
 

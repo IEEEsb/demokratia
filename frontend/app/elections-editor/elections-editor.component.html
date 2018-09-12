@@ -1,0 +1,49 @@
+<div class="container-fluid main h-100">
+	<div class="row h-100" *ngIf="election">
+		<div class="col">
+			<div class="form mt-5">
+				<h2>{{editing ? 'Editar' : 'Crear'}} Elección</h2>
+				<form (ngSubmit)="submit()" #electionForm="ngForm">
+					<div class="form-group">
+						<label for="name">Nombre</label>
+						<input required type="text" class="form-control" [ngClass]="name.valid ? 'is-valid' : 'is-invalid'" name="name" #name="ngModel" placeholder="Introducir nombre" [(ngModel)]="election.name">
+					</div>
+					<div class="form-group">
+						<label for="title">Título</label>
+						<input required type="text" class="form-control" [ngClass]="title.valid ? 'is-valid' : 'is-invalid'" name="title" #title="ngModel" placeholder="Introducir título" [(ngModel)]="election.title">
+					</div>
+					<div class="form-group">
+						<label for="shortDescription">Descripción corta</label>
+						<input required type="text" class="form-control" [ngClass]="shortDescription.valid ? 'is-valid' : 'is-invalid'" name="shortDescription" #shortDescription="ngModel" placeholder="Introducir descripción corta" [(ngModel)]="election.shortDescription">
+					</div>
+					<div class="form-group">
+						<label for="longDescription">Descripción larga</label>
+						<input type="text" class="form-control" [ngClass]="longDescription.valid ? 'is-valid' : 'is-invalid'" name="longDescription" #longDescription="ngModel" placeholder="Introducir descripción larga" [(ngModel)]="election.longDescription">
+					</div>
+					<app-date-range-picker [(startDate)]="election.startDate" [(endDate)]="election.endDate"></app-date-range-picker>
+					<div class="row" *ngIf="editing">
+						<div class="col">
+							<div class="h1">Polls</div>
+						</div>
+						<a class="align-self-center link" [routerLink]="'/elections/' + election.name + '/polls'">Añadir Polls</a>
+					</div>
+					<ul class="list-group" *ngIf="editing">
+						<li class="list-group-item" *ngFor="let poll of election.polls; index as i">
+								<div>
+									<a class="link" href="/sdfsd">{{poll.question}}</a>
+									<div class="float-right">
+										<button class="button-link enabled error px-1" (click)="delete(i)">Eliminar</button>
+										<a class="link px-1" [routerLink]="'/elections/' + election.name + '/polls/' + poll.name">Editar</a>
+									</div>
+								</div>
+								<p class="description mt-3 pl-3">{{poll.description}}</p>
+						</li>
+					</ul>
+					<div class="form-group">
+						<input type="submit" class="submit button-link link" [ngClass]="electionForm.invalid && !dateValid ? 'disabled': 'enabled'" [disabled]="electionForm.invalid && !dateValid" value="Editar">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

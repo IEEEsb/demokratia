@@ -1,0 +1,24 @@
+<div class="container-fluid main h-100">
+	<div class="row h-100">
+		<div class="col" *ngIf="user">
+			<div class="row">
+				<div class="col">
+					<div class="h1">Elecciones</div>
+				</div>
+				<a class="align-self-center link" routerLink="/elections/add" *ngIf="user.roles.includes('admin')">Añadir Elecciones</a>
+			</div>
+			<ul class="list-group">
+				<li class="list-group-item" *ngFor="let election of elections; index as i">
+						<div>
+							<a class="link" [routerLink]="'/elections/' + election.name + '/view'">{{election.title}}</a>
+							<div class="float-right">
+								<button class="button-link enabled error px-1" (click)="delete(i)" *ngIf="user.roles.includes('admin')">Eliminar</button>
+								<a class="link px-1" [routerLink]="'/elections/' + election.name" *ngIf="user.roles.includes('admin')">Editar</a>
+							</div>
+						</div>
+						<p class="description mt-3 pl-3">{{election.shortDescription}}</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

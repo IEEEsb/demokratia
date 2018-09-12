@@ -1,0 +1,21 @@
+<div class="container-fluid main h-100">
+	<div class="row h-100">
+		<div class="col" *ngIf="election">
+			<h1>{{election.title}}</h1>
+			<div class="form mt-3" *ngIf="results">
+				<h4>Estos son los resultados:</h4>
+				<div class="mt-4" *ngFor="let poll of results">
+					<h5 class="mb-4">{{poll.poll}}:</h5>
+					<div class="input-group" *ngFor="let count of poll.counts">
+						<div class="input-group-prepend">
+							<span class="input-group-text">{{count.candidate ? count.candidate.name : ""}}</span>
+						</div>
+						<div class="input-group-append">
+							<span class="input-group-text bg-white">Votos: {{count.votes}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

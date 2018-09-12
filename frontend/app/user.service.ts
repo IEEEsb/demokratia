@@ -32,8 +32,17 @@ export class UserService {
 		);
 	}
 
+	logout() {
+		return this.http.post('api/logout', {})
+		.pipe(
+			tap(() => this.userSubject.next(null)),
+			catchError(this.handleError)
+		);
+	}
+
 	getUser() {
-		return this.userSubject.asObservable();
+		return this.http.get<User>('api/user')
+		.pipe(catchError(this.handleError));
 	}
 
 	update() {
