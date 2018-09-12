@@ -9,11 +9,11 @@ const {
 const router = express.Router();
 
 router.post('/api/login', validate(validators.login), authController.login);
-router.post('/api/logout', authController.logout);
 
 // Endpoints that require authentication
 router.use(authController.authRequired);
 
+router.post('/api/logout', authController.logout);
 router.get('/api/user', authController.getUser);
 router.get('/api/elections', electionController.listElections);
 router.get('/api/elections/:electionName', electionController.getElection);
