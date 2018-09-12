@@ -101,7 +101,7 @@ export class ElectionService {
 		if (!poll.description) {
 			delete poll.description;
 		}
-		return this.http.post<any>('/api/elections/' + electionName + '/polls/', poll)
+		return this.http.post<any>('api/elections/' + electionName + '/polls/', poll)
 		.pipe(
 			delay(this.timeout),
 			tap(() => {
@@ -116,7 +116,7 @@ export class ElectionService {
 		if (!poll.description) {
 			delete poll.description;
 		}
-		return this.http.patch<any>('/api/elections/' + electionName + '/polls/' + poll.name, poll)
+		return this.http.patch<any>('api/elections/' + electionName + '/polls/' + poll.name, poll)
 		.pipe(
 			delay(this.timeout),
 			tap(() => {
@@ -128,7 +128,7 @@ export class ElectionService {
 
 	deletePoll(electionName: string, pollName: string) {
 		this.loadingService.setLoading();
-		return this.http.delete('/api/elections/' + electionName + '/polls/' + pollName)
+		return this.http.delete('api/elections/' + electionName + '/polls/' + pollName)
 		.pipe(
 			delay(this.timeout),
 			tap(() => {
@@ -140,7 +140,7 @@ export class ElectionService {
 
 	addCandidacy(electionName: string, pollName: string, candidacy: any) {
 		this.loadingService.setLoading();
-		return this.http.post<any>('/api/elections/' + electionName + '/polls/' + pollName + '/candidates', candidacy)
+		return this.http.post<any>('api/elections/' + electionName + '/polls/' + pollName + '/candidates', candidacy)
 		.pipe(
 			delay(this.timeout),
 			tap(() => {
@@ -152,7 +152,7 @@ export class ElectionService {
 
 	deleteCandidacy(electionName: string, pollName: string, alias: string) {
 		this.loadingService.setLoading();
-		return this.http.delete<any>('/api/elections/' + electionName + '/polls/' + pollName + '/candidates/' + alias)
+		return this.http.delete<any>('api/elections/' + electionName + '/polls/' + pollName + '/candidates/' + alias)
 		.pipe(
 			delay(this.timeout),
 			tap(() => {
