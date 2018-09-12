@@ -37,7 +37,7 @@ module.exports.login = (req, res, next) => {
 			// Check that the password is correct
 			if (!isValid) throw new CredentialsError();
 			if (!user.roles.includes(votingRole)
-				|| !user.roles.includes(adminRole)) throw new MissingRolesError();
+				&& !user.roles.includes(adminRole)) throw new MissingRolesError();
 
 			// Successful login. Set the session up and send the minimal set of
 			// user information required by the application
