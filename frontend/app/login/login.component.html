@@ -13,7 +13,7 @@
 						<input required type="password" class="form-control" [ngClass]="password.valid ? 'is-valid' : 'is-invalid'" name="password" #password="ngModel" placeholder="Introducir contraseña" [(ngModel)]="user.password">
 					</div>
 					<div class="form-group">
-						<button class="submit" [ngClass]="loginForm.invalid ? 'disabled': 'enabled'" (click)="login()" [disabled]="loginForm.invalid">Acceder</button>
+						<button class="submit button-link" [ngClass]="loginForm.invalid ? 'disabled': 'enabled'" (click)="login()" [disabled]="loginForm.invalid">Acceder</button>
 					</div>
 					<div class="error" *ngIf="error">
 						{{error}}
