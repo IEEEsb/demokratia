@@ -51,7 +51,7 @@ mongoose.connect(config.mongo.serverUrl, {
 	app.use(express.urlencoded({ extended: false }));
 	// Session storage
 	app.use(session({
-		name: 'auth',
+		name: config.store.name,
 		secret: config.store.secret,
 		store: new MongoStore({ mongooseConnection: mongoose.connection }),
 		resave: false,
