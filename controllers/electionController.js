@@ -11,7 +11,7 @@ const {
 const { votingRole } = require('../config.json');
 
 module.exports.listElections = (req, res, next) => (
-	Election.find({}, '-_id -__v -longDescription -remainingVoters -polls -ballots')
+	Election.find({}, '-_id -__v -longDescription -voters -polls -ballots')
 		.then(elections => res.json(elections))
 		.catch(e => next(e))
 );
@@ -19,11 +19,7 @@ module.exports.listElections = (req, res, next) => (
 module.exports.addElection = (req, res, next) => (
 	User.find({ roles: votingRole })
 		.distinct('_id') // Return an array of ids, rather than objects
-		.then(userIds => Election.create({
-			remainingVoters: userIds,
-			censusSize: userIds.length,
-			...req.body,
-		}))
+		.then(userIds => Election.create(req.body))
 		.then(election => res.json(election))
 		.catch((e) => {
 			// E11000 is Mongo's error for duplicate key
@@ -68,7 +64,7 @@ module.exports.deleteElection = (req, res, next) => (
 
 module.exports.getElection = (req, res, next) => (
 	Election.findOne({ name: req.params.electionName },
-		'-_id -__v -remainingVoters -ballots')
+		'-_id -__v -voters -ballots')
 		// The _ids are intentionally included here, to be able to put them in
 		// the ballot when voting
 		.populate('polls.candidacies.user', 'name alias')
@@ -80,22 +76,21 @@ module.exports.getElection = (req, res, next) => (
 		.catch(e => next(e))
 );
 
-module.exports.checkVoter = (req, res, next) => (
-	Election.findOne({ name: req.params.electionName })
-		.then((election) => {
-			if (election === null) throw new UnknownObjectError('Election');
+module.exports.checkVoter = async (req, res, next) => {
+	try {
+		const election = await Election.findOne({ name: req.params.electionName })
+		if (!election) throw new UnknownObjectError('Election');
 
-			// Check if this user can vote in this specific poll (i. e. they
-			// haven't voted before)
-			if (!election.remainingVoters.find(
-				remVoter => remVoter.toString() === req.session.userId
-			)) {
-				throw new NotInCensusError();
-			}
-			return res.sendStatus(204);
-		})
-		.catch(e => next(e))
-);
+		// Check if this user can vote in this specific poll (i. e. they
+		// haven't voted before)
+		if (election.voters.find(voter => voter.toString() === req.session.userId)) {
+			throw new NotInCensusError();
+		}
+		return res.sendStatus(204);
+	} catch (e) {
+		return next(e)
+	}
+};
 
 module.exports.vote = (req, res, next) => (
 	Election.findOne({ name: req.params.electionName })
@@ -104,9 +99,7 @@ module.exports.vote = (req, res, next) => (
 			if (Date.now() < election.startDate || election.endDate < Date.now()) {
 				throw new PollsClosedError(election.startDate, election.endDate);
 			}
-			if (!election.remainingVoters.find(
-				remVoter => remVoter.toString() === req.session.userId
-			)) {
+			if (election.voters.find(voter => voter.toString() === req.session.userId)) {
 				throw new NotInCensusError();
 			}
 
@@ -157,8 +150,7 @@ module.exports.vote = (req, res, next) => (
 
 			const ballot = new Ballot({ choices: req.body.choices });
 			return Election.update({ name: req.params.electionName }, {
-				$push: { ballots: ballot },
-				$pull: { remainingVoters: req.session.userId },
+				$push: { ballots: ballot, voters: req.session.userId },
 			})
 				// Continue the promise chain here to have access to the ballot
 				.then(res.json({ secret: ballot.id }));

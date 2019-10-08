@@ -15,10 +15,7 @@ const Election = new Schema({
 	longDescription: { type: String },
 	// Which users can vote during these elections. The items will be
 	// removed as users vote
-	remainingVoters: [{ type: Schema.Types.ObjectId }],
-	// How many people can vote in this election (i.e. the initial length of
-	// remainingVoters). Useful for participation stats
-	censusSize: { type: Number, required: true },
+	voters: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 	// When should the polls open and close, and creation metadata
 	startDate: { type: Date, required: true },
 	endDate: { type: Date, required: true },
