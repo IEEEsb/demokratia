@@ -1,5 +1,5 @@
 const Election = require('../models/Election');
-const User = require('../models/UserModel');
+const User = require('../models/User');
 const Ballot = require('../models/Ballot');
 const { arraysEqual } = require('../common/util');
 const {

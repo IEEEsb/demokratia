@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
+import { UtilsService } from 'angular-ieeesb-lib';
 import { UserService } from '../user.service';
-
-import { User } from '../../../models/UserModel';
 
 @Component({
 	selector: 'app-login',
@@ -12,30 +11,21 @@ import { User } from '../../../models/UserModel';
 })
 export class LoginComponent implements OnInit {
 
-	user: User = {
-		alias: '',
-		password: ''
-	};
+	error: String;
 
-	error = null;
-
-	constructor(private userService: UserService, private router: Router) {
-
-	}
+	constructor(private utilsService: UtilsService, private userService: UserService, private router: Router) { }
 
 	ngOnInit() {
+		this.utilsService.getParams().subscribe((params) => {
+			if (!params) return;
 
-	}
-
-	login() {
-		this.userService.login(this.user.alias, this.user.password).subscribe(
-			(data: User) => {
-				this.error = null;
-				this.router.navigate(['/elections']);
-			},
-			error => {
-				this.error = error;
+			if (params.token) {
+				this.userService.login(params.token).subscribe((user) => {
+					this.router.navigate(['/']);
+					this.utilsService.setParams(null);
+				});
 			}
-		);
+		});
 	}
+
 }

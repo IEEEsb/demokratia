@@ -10,21 +10,21 @@ import { VoteComponent } from './vote/vote.component';
 import { ResultsComponent } from './results/results.component';
 import { CheckComponent } from './check/check.component';
 
-import { AuthGuard, LoggedOutGuard, AdminGuard, ElectionExistGuard, PollExistGuard, CanVoteGuard, HasVotedGuard, AfterEndElectionGuard, AfterStartElectionGuard } from './guards.guard';
+import { LoggedInGuard, LoggedOutGuard, AdminGuard, ElectionExistGuard, PollExistGuard, CanVoteGuard, HasVotedGuard, AfterEndElectionGuard, AfterStartElectionGuard } from './guards.guard';
 
 
 const routes: Routes = [
-	{ path: 'login', component: LoginComponent, canActivate: [LoggedOutGuard]},
-	{ path: 'elections', component: ElectionsViewerComponent, canActivate: [AuthGuard]},
-	{ path: 'elections/add', component: ElectionsEditorComponent, canActivate: [AuthGuard, AdminGuard]},
-	{ path: 'elections/:electionName', component: ElectionsEditorComponent, canActivate: [AuthGuard, AdminGuard, ElectionExistGuard]},
-	{ path: 'elections/:electionName/polls', component: PollsEditorComponent, canActivate: [AuthGuard, AdminGuard, ElectionExistGuard]},
-	{ path: 'elections/:electionName/polls/:pollName', component: PollsEditorComponent, canActivate: [AuthGuard, AdminGuard, ElectionExistGuard, PollExistGuard]},
-	{ path: 'elections/:electionName/view', component: ElectionViewerComponent, canActivate: [AuthGuard, ElectionExistGuard]},
-	{ path: 'elections/:electionName/vote', component: VoteComponent, canActivate: [AuthGuard, ElectionExistGuard, CanVoteGuard]},
-	{ path: 'elections/:electionName/results', component: ResultsComponent, canActivate: [AuthGuard, ElectionExistGuard, AfterEndElectionGuard]},
-	{ path: 'elections/:electionName/check', component: CheckComponent, canActivate: [AuthGuard, ElectionExistGuard, AfterStartElectionGuard, HasVotedGuard]},
-	{ path: '**', redirectTo: 'login' }
+	{ path: 'login', component: LoginComponent },
+	{ path: 'elections', component: ElectionsViewerComponent, canActivate: [LoggedInGuard] },
+	{ path: 'elections/add', component: ElectionsEditorComponent, canActivate: [LoggedInGuard, AdminGuard] },
+	{ path: 'elections/:electionName', component: ElectionsEditorComponent, canActivate: [LoggedInGuard, AdminGuard, ElectionExistGuard] },
+	{ path: 'elections/:electionName/polls', component: PollsEditorComponent, canActivate: [LoggedInGuard, AdminGuard, ElectionExistGuard] },
+	{ path: 'elections/:electionName/polls/:pollName', component: PollsEditorComponent, canActivate: [LoggedInGuard, AdminGuard, ElectionExistGuard, PollExistGuard] },
+	{ path: 'elections/:electionName/view', component: ElectionViewerComponent, canActivate: [LoggedInGuard, ElectionExistGuard] },
+	{ path: 'elections/:electionName/vote', component: VoteComponent, canActivate: [LoggedInGuard, ElectionExistGuard, CanVoteGuard] },
+	{ path: 'elections/:electionName/results', component: ResultsComponent, canActivate: [LoggedInGuard, ElectionExistGuard, AfterEndElectionGuard] },
+	{ path: 'elections/:electionName/check', component: CheckComponent, canActivate: [LoggedInGuard, ElectionExistGuard, AfterStartElectionGuard, HasVotedGuard] },
+	{ path: '**', redirectTo: 'elections' }
 ];
 
 @NgModule({

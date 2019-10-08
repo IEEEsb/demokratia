@@ -5,13 +5,43 @@ import { map, tap, catchError } from 'rxjs/operators';
 
 import { UserService } from './user.service';
 import { ElectionService } from './election.service';
+import { UtilsService } from 'angular-ieeesb-lib';
+
+const config = require('../../config.json');
+
+@Injectable({
+	providedIn: 'root'
+})
+export class LoggedInGuard implements CanActivate {
+
+	constructor(private userService: UserService, private utilsService: UtilsService, private router: Router) { }
+
+	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+		return new Promise((resolve, reject) => {
+			this.userService.getUser().subscribe(
+				(user) => resolve(true),
+				(e) => {
+					this.userService.getAuthData().subscribe((data) => {
+						const query = this.utilsService.objectToQuerystring({
+							callback: `${config.host}/%23/login`,
+							service: data.service,
+							scope: data.scope.join(','),
+						})
+						window.location.replace(`${data.server}/#/login${query}`);
+					});
+				}
+			);
+		});
+	}
+}
+
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
 
-	constructor(private userService: UserService, private router: Router) {}
+	constructor(private userService: UserService, private router: Router) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		return new Promise<boolean>((resolve, reject) => {
@@ -37,7 +67,7 @@ export class AuthGuard implements CanActivate {
 })
 export class LoggedOutGuard implements CanActivate {
 
-	constructor(private userService: UserService, private router: Router) {}
+	constructor(private userService: UserService, private router: Router) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		return new Promise<boolean>((resolve, reject) => {
@@ -63,7 +93,7 @@ export class LoggedOutGuard implements CanActivate {
 })
 export class AdminGuard implements CanActivate {
 
-	constructor(private userService: UserService, private router: Router) {}
+	constructor(private userService: UserService, private router: Router) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		return new Promise<boolean>((resolve, reject) => {
@@ -89,7 +119,7 @@ export class AdminGuard implements CanActivate {
 })
 export class ElectionExistGuard implements CanActivate {
 
-	constructor(private electionService: ElectionService, private router: Router) {}
+	constructor(private electionService: ElectionService, private router: Router) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		return new Promise<boolean>((resolve, reject) => {
@@ -114,7 +144,7 @@ export class ElectionExistGuard implements CanActivate {
 })
 export class PollExistGuard implements CanActivate {
 
-	constructor(private electionService: ElectionService, private router: Router) {}
+	constructor(private electionService: ElectionService, private router: Router) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		return new Promise<boolean>((resolve, reject) => {
@@ -147,7 +177,7 @@ export class PollExistGuard implements CanActivate {
 })
 export class CanVoteGuard implements CanActivate {
 
-	constructor(private electionService: ElectionService, private router: Router) {}
+	constructor(private electionService: ElectionService, private router: Router) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		return new Promise<boolean>((resolve, reject) => {
@@ -182,7 +212,7 @@ export class CanVoteGuard implements CanActivate {
 })
 export class HasVotedGuard implements CanActivate {
 
-	constructor(private electionService: ElectionService, private router: Router) {}
+	constructor(private electionService: ElectionService, private router: Router) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		return new Promise<boolean>((resolve, reject) => {
@@ -217,7 +247,7 @@ export class HasVotedGuard implements CanActivate {
 })
 export class AfterEndElectionGuard implements CanActivate {
 
-	constructor(private electionService: ElectionService, private router: Router) {}
+	constructor(private electionService: ElectionService, private router: Router) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		return new Promise<boolean>((resolve, reject) => {
@@ -250,7 +280,7 @@ export class AfterEndElectionGuard implements CanActivate {
 })
 export class AfterStartElectionGuard implements CanActivate {
 
-	constructor(private electionService: ElectionService, private router: Router) {}
+	constructor(private electionService: ElectionService, private router: Router) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		return new Promise<boolean>((resolve, reject) => {

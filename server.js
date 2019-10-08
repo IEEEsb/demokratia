@@ -15,7 +15,7 @@ const routes = require('./routes');
 const { globalErrorHandler } = require('./common/errors');
 
 // Load the Mongoose model for user profiles
-require('./models/UserModel');
+require('./models/User');
 
 
 console.log('===================================');

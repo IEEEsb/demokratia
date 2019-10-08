@@ -6,8 +6,14 @@ const {
 	validators, validate, validateWithoutStripping,
 } = require('./controllers/validators');
 
+function selfUser(req, res, next) {
+	req.params.userId = req.session.userId;
+	next();
+}
+
 const router = express.Router();
 
+router.get('/api/auth', authController.getServiceData);
 router.post('/api/login', validate(validators.login), authController.login);
 
 // Endpoints that require authentication

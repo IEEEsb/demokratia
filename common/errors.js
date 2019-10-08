@@ -72,7 +72,7 @@ class PollsClosedError extends DemokratiaError {
 	constructor(openingDate, closingDate) {
 		super('The polls are closed. Their opening window is set from '
 			+ `${openingDate.toISOString()} to ${closingDate.toISOString()}`,
-		'polls_closed', 400);
+			'polls_closed', 400);
 	}
 }
 module.exports.PollsClosedError = PollsClosedError;
@@ -97,7 +97,7 @@ class WrongBallotPollsError extends DemokratiaError {
 	constructor(expectedPolls) {
 		super('The ballot must contain exactly one vote for each of the '
 			+ `following polls: ${expectedPolls.join(', ')}`,
-		'wrong_ballot_polls', 400);
+			'wrong_ballot_polls', 400);
 	}
 }
 module.exports.WrongBallotPollsError = WrongBallotPollsError;

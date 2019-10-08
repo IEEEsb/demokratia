@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { UserService } from './user.service';
 import { ElectionService } from './election.service';
@@ -49,7 +49,7 @@ library.add(fas);
 		FontAwesomeModule,
 		FormsModule,
 		ReactiveFormsModule,
-		NgbModule.forRoot()
+		NgbModule
 	],
 	providers: [
 		UserService,

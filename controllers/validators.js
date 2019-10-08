@@ -16,18 +16,17 @@ module.exports.validateWithoutStripping = (validator, options) => (
 module.exports.validators = {
 	login: {
 		body: {
-			alias: Joi.string().required(),
-			password: Joi.string().required(),
+			token: Joi.string().required().label('Token'),
 		},
 	},
 	election: {
 		body: {
-			name: Joi.string().token().required(),
-			title: Joi.string().required(),
-			shortDescription: Joi.string().required(),
-			longDescription: Joi.string(),
-			startDate: Joi.string().isoDate().required(),
-			endDate: Joi.string().isoDate().required(),
+			name: Joi.string().token().required().label('Nombre'),
+			title: Joi.string().required().label('Título'),
+			shortDescription: Joi.string().required().label('Descripción Corta'),
+			longDescription: Joi.string().label('Descripción Larga'),
+			startDate: Joi.string().isoDate().required().label('Fecha Inicio'),
+			endDate: Joi.string().isoDate().required().label('Fecha Final'),
 		},
 	},
 	updateElection: {

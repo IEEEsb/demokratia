@@ -1,34 +1,31 @@
 const Election = require('../models/Election');
 const Poll = require('../models/Poll');
-const User = require('../models/UserModel');
+const User = require('../models/User');
 const {
 	DuplicateObjectError, UnknownObjectError, WrongPropertiesError,
 } = require('../common/errors');
 
 const { votingRole } = require('../config.json');
 
-module.exports.addPoll = (req, res, next) => (
-	Election.findOne({
-		name: req.params.electionName,
-	})
-		.then((election) => {
-			if (election === null) throw new UnknownObjectError('Election');
+module.exports.addPoll = async (req, res, next) => {
+	try {
+		const election = await Election.findOne({ name: req.params.electionName });
+		if (!election) throw new UnknownObjectError('Election');
 
-			// We need to repeat the query for the election's name. Otherwise
-			// we won't be able to know if the update failed because the
-			// election doesn't exist or because the poll was duplicate.
-			return Election.update({
-				name: req.params.electionName,
-				'polls.name': { $ne: req.body.name },
-			}, { $addToSet: { polls: new Poll(req.body) } });
-		})
-		.then((result) => {
-			if (result.nModified === 0) throw new DuplicateObjectError('Poll');
+		// We need to repeat the query for the election's name. Otherwise
+		// we won't be able to know if the update failed because the
+		// election doesn't exist or because the poll was duplicate.
+		const result = await Election.update({
+			name: req.params.electionName,
+			'polls.name': { $ne: req.body.name },
+		}, { $addToSet: { polls: new Poll(req.body) } });
+		if (result.nModified === 0) throw new DuplicateObjectError('Poll');
 
-			return res.sendStatus(204);
-		})
-		.catch(e => next(e))
-);
+		return res.sendStatus(204);
+	} catch (e) {
+		return next(e);
+	}
+};
 
 module.exports.updatePoll = (req, res, next) => (
 	Election.findOne({ name: req.params.electionName })
@@ -95,47 +92,42 @@ module.exports.deletePoll = (req, res, next) => (
 		.catch(e => next(e))
 );
 
-module.exports.addCandidate = (req, res, next) => {
+module.exports.addCandidate = async (req, res, next) => {
 	// TODO: Make sure that the candidate isn't present in any other Poll of
 	// this Election
-	let user;
 
-	return User.findOne({ alias: req.body.alias, roles: votingRole })
-		.then((item) => {
-			user = item;
-			// We also consider that the user doesn't exist if they don't have the required
-			// roles, just to avoid leaking user role information
-			if (user === null) throw new UnknownObjectError('User');
+	try {
+		const user = await User.findOne({ alias: req.body.alias, roles: votingRole });
+		// We also consider that the user doesn't exist if they don't have the required
+		// roles, just to avoid leaking user role information
+		if (!user) throw new UnknownObjectError('User');
 
-			return Election.findOne({ name: req.params.electionName });
-		})
-		.then((election) => {
-			if (election === null) throw new UnknownObjectError('Election');
+		const election = await Election.findOne({ name: req.params.electionName });
+		if (!election) throw new UnknownObjectError('Election');
 
-			return Election.update({
-				name: req.params.electionName,
-				'polls.name': req.params.pollName,
-			},
+		const result = await Election.updateOne({
+			name: req.params.electionName,
+			'polls.name': req.params.pollName,
+		},
 			{
 				$addToSet: {
 					'polls.$.candidacies': {
-						user: user.id,
+						user: user._id,
 						proposal: req.body.proposal,
 					},
 				},
 			});
-		})
-		.then((result) => {
-			// Check that the provided pollName was valid
-			if (result.n === 0) throw new UnknownObjectError('Poll');
+		// Check that the provided pollName was valid
+		if (result.n === 0) throw new UnknownObjectError('Poll');
 
-			// Make sure that a Poll object was modified (i.e. the candidate
-			// wasn't duplicate)
-			if (result.nModified === 0) throw new DuplicateObjectError('Candidate');
+		// Make sure that a Poll object was modified (i.e. the candidate
+		// wasn't duplicate)
+		if (result.nModified === 0) throw new DuplicateObjectError('Candidate');
 
-			return res.sendStatus(204);
-		})
-		.catch(e => next(e));
+		return res.sendStatus(204);
+	} catch (e) {
+		return next(e);
+	}
 };
 
 module.exports.deleteCandidate = (req, res, next) => (

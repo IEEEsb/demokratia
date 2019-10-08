@@ -5,8 +5,6 @@ import { Router } from '@angular/router';
 import { LoadingService } from './loading.service';
 import { UserService } from './user.service';
 
-import { User } from '../../models/UserModel';
-
 @Component({
 	selector: 'app-root',
 	templateUrl: './app.component.html',
@@ -14,7 +12,7 @@ import { User } from '../../models/UserModel';
 })
 export class AppComponent implements OnInit {
 
-	user: User;
+	user: any;
 	loading: boolean;
 	constructor(private location: Location, private router: Router, private userService: UserService, private loadingService: LoadingService) {
 

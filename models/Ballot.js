@@ -14,7 +14,7 @@ const Ballot = new Schema({
 			// The name of the poll being voted
 			poll: { type: String, required: true },
 			// The ObjectId for the chosen candidate
-			candidate: { type: Schema.Types.ObjectId, ref: 'UserModel', required: true },
+			candidate: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		},
 	],
 });

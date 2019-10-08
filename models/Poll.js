@@ -20,7 +20,7 @@ const Poll = new Schema({
 	candidacies: [
 		{
 			_id: false,
-			user: { type: Schema.Types.ObjectId, ref: 'UserModel', required: true },
+			user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 			proposal: { type: String, required: true },
 		},
 	],

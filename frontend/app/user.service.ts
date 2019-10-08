@@ -3,55 +3,69 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
-import { SHA256 } from 'crypto-js';
+import { LoadingService, UtilsService } from 'angular-ieeesb-lib';
 
-import { User } from '../../models/UserModel';
+import { SHA256 } from 'crypto-js';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class UserService {
 
-	private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+	private userSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient, private loadingService: LoadingService, private utilsService: UtilsService) {
 
 	}
 
-	login(alias: string, password: string) {
-		const body = {
-			alias: alias,
-			password: password === '' ? '' : SHA256(password).toString()
-		};
+	getAuthData() {
+		this.loadingService.setLoading();
+		return this.http.get<any>('api/auth')
+			.pipe(
+				tap((data) => {
+					this.loadingService.unsetLoading();
+				}),
+				catchError(this.utilsService.handleError.bind(this))
+			);
+	}
 
-		return this.http.post<User>('api/login', body)
-		.pipe(
-			tap((user) => this.userSubject.next(user)),
-			catchError(this.handleError)
-		);
+	login(token) {
+		this.loadingService.setLoading();
+		return this.http.post<any>('api/login/', { token })
+			.pipe(
+				tap((data) => {
+					this.userSubject.next(data.user);
+					this.loadingService.unsetLoading();
+				}),
+				catchError(this.utilsService.handleError.bind(this))
+			);
 	}
 
 	logout() {
-		return this.http.post('api/logout', {})
-		.pipe(
-			tap(() => this.userSubject.next(null)),
-			catchError(this.handleError)
-		);
+		this.loadingService.setLoading();
+		return this.http.post<any>('api/logout/', {})
+			.pipe(
+				tap((data) => {
+					this.userSubject.next(null);
+					this.loadingService.unsetLoading();
+				}),
+				catchError(this.utilsService.handleError.bind(this))
+			);
 	}
 
 	getUser() {
-		return this.http.get<User>('api/user')
-		.pipe(catchError(this.handleError));
+		return this.http.get<any>('api/user')
+			.pipe(catchError(this.handleError));
 	}
 
 	update() {
-		this.http.get<User>('api/user')
-		.pipe(catchError(this.handleError))
-		.subscribe(
-			(user) => {
-				this.userSubject.next(user);
-			}
-		);
+		this.http.get<any>('api/user')
+			.pipe(catchError(this.handleError))
+			.subscribe(
+				(user) => {
+					this.userSubject.next(user);
+				}
+			);
 	}
 
 	private handleError(error: HttpErrorResponse) {
@@ -66,16 +80,16 @@ export class UserService {
 
 			switch (error.error.code) {
 				case 'wrong_user_pass':
-				errorText = 'Usuario/Contraseña incorrectos';
-				break;
+					errorText = 'Usuario/Contraseña incorrectos';
+					break;
 
 				case 'invalid_parameters':
-				errorText = `Parámetros inválidos`;
-				break;
+					errorText = `Parámetros inválidos`;
+					break;
 
 				default:
-				errorText = 'Error desconocido';
-				break;
+					errorText = 'Error desconocido';
+					break;
 			}
 		}
 		// return an observable with a user-facing error message

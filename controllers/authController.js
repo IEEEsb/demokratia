@@ -1,54 +1,35 @@
-const crypto = require('crypto');
+const axios = require('axios');
 
-const User = require('../models/UserModel');
-// eslint-disable-next-line import/no-unresolved
-const { adminRole, votingRole } = require('../config.json');
+const User = require('../models/User');
+const { adminRole, votingRole, auth } = require('../config.json');
 const {
 	AdminRequiredError, AuthenticationRequiredError, CredentialsError,
 	InvalidSessionError, MissingRolesError,
 } = require('../common/errors');
 
-function validateSaltedPassword(password, salt, hash, iterations) {
-	return new Promise((resolve, reject) => {
-		crypto.pbkdf2(password.toLowerCase(), salt, iterations, 256, 'sha256',
-			(err, key) => {
-				if (err) return reject(err);
-				const calculatedHash = key.toString('hex');
-				return resolve(calculatedHash === hash);
-			});
-	});
-}
+module.exports.getServiceData = async (req, res, next) => {
+	try {
+		return res.status(200).json({ service: auth.service, scope: auth.scope, server: auth.server });
+	} catch (e) {
+		return next(e);
+	}
+};
 
-module.exports.login = (req, res, next) => {
-	let user;
+module.exports.login = async (req, res, next) => {
+	try {
+		const response = await axios.get(`${auth.server}/api/service/user`, { params: { token: req.body.token, secret: auth.secret } });
+		const { data } = response;
+		if (!data.name) throw new InvalidScopeError();
 
-	return User.findOne({ alias: req.body.alias.toLowerCase() })
-		.then((item) => {
-			user = item;
-			// Check that the specified user exists in the DB
-			if (user === null) throw new CredentialsError();
+		const user = await User.findOneAndUpdate({ authId: data._id }, { $setOnInsert: { name: data.name, alias: data.alias }, $set: { roles: data.roles } }, { upsert: true, new: true, fields: '_id name roles' });
+		if (!user.roles.includes(votingRole) && !user.roles.includes(adminRole)) throw new MissingRolesError();
 
-			// Validate the password provided against the one stored for this
-			// user, using their specific salt
-			return validateSaltedPassword(req.body.password, user.pwd.salt,
-				user.pwd.hash, user.pwd.iterations);
-		})
-		.then((isValid) => {
-			// Check that the password is correct
-			if (!isValid) throw new CredentialsError();
-			if (!user.roles.includes(votingRole)
-				&& !user.roles.includes(adminRole)) throw new MissingRolesError();
-
-			// Successful login. Set the session up and send the minimal set of
-			// user information required by the application
-			req.session.userId = user.id;
-			return res.status(200).json({
-				name: user.name,
-				alias: user.alias,
-				roles: user.roles,
-			});
-		})
-		.catch(e => next(e));
+		req.session.token = req.body.token;
+		req.session.userId = user._id;
+		return res.status(200).json({ user });
+	} catch (e) {
+		return next(e);
+	}
 };
 
 module.exports.getUser = (req, res, next) => (

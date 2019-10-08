@@ -4,7 +4,6 @@ import { ElectionService } from '../election.service';
 import { UserService } from '../user.service';
 
 import { Election } from '../../../models/Election';
-import { User } from '../../../models/UserModel';
 
 @Component({
 	selector: 'app-elections-viewer',
@@ -14,7 +13,7 @@ import { User } from '../../../models/UserModel';
 export class ElectionsViewerComponent implements OnInit {
 
 	elections: Election[] = [];
-	user: User;
+	user: any;
 
 	constructor(private electionService: ElectionService, private userService: UserService) {
 
