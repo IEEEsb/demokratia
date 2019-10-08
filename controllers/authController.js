@@ -21,7 +21,7 @@ module.exports.login = async (req, res, next) => {
 		const { data } = response;
 		if (!data.name) throw new InvalidScopeError();
 
-		const user = await User.findOneAndUpdate({ authId: data._id }, { $setOnInsert: { name: data.name, alias: data.alias }, $set: { roles: data.roles } }, { upsert: true, new: true, fields: '_id name roles' });
+		const user = await User.findOneAndUpdate({ authId: data._id }, { $setOnInsert: { name: data.name, alias: data.alias }, $set: { roles: data.roles } }, { upsert: true, new: true, fields: '_id name roles alias' });
 		if (!user.roles.includes(votingRole) && !user.roles.includes(adminRole)) throw new MissingRolesError();
 
 		req.session.token = req.body.token;

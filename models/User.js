@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const Float = require('mongoose-float').loadType(mongoose);
 
 const User = new Schema({
-	alias: { type: String, index: { unique: true, dropDups: true } },
+	alias: { type: String, required: true },
 	authId: { type: String, index: { unique: true, dropDups: true } },
 	name: { type: String, required: true },
 	roles: [{ type: String }],
